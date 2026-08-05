@@ -1,0 +1,126 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2026 KMI Music, Inc.
+
+#modline {
+  // border-top: 2px dashed #fff;
+
+  .modline-sets {
+    position: relative;
+    display: none;
+  }
+  .modline-sets.active {
+    display: block;
+  }
+
+  .modline-labels {
+    .label {
+      float: left;
+      text-align: center;
+      margin: 0 4px 5px;
+      font-size: 10px;
+    }
+    :first-child {
+      margin-left: 0;
+    }
+    :last-child {
+      margin-right: 0;
+    }
+    .type { width: 20.23%;}
+    .mod-voice { width: 10%;}
+    .invert-source { width: 10%;}
+    .gain { width: 7%;}
+    .offset { width: 6%;}
+    .curve { width: 10%;}
+    .min { width: 6%;}
+    .max { width: 6%;}
+    .solo { width: 6%;}
+    .reporter { width: 8%;} /* need FF fix*/
+  }
+  .modline {
+    margin-bottom: 10px;
+    input, select, button {
+      float: left;
+      margin: 0 4px;
+      font-size: 9px;
+    }
+    button {
+      height: 27px;
+    }
+    :first-child {
+      margin-left: 0;
+    }
+    :last-child {
+      margin-right: 0;
+    }
+    .input-group {
+      width: 20.1%;
+      float: left;
+      margin-right: 5px;
+
+      .message-type {
+        width: 100%;
+      }
+      .cc-number {
+        display: none;
+        width: 34.5%;
+      }
+
+    }
+    .cc {
+      .message-type {
+        width: 60%;
+      }
+      .cc-number {
+        display: block;
+      }
+    }
+    .type { width: 20.23%;}
+    .mod-voice { width: 10%;}
+    .invert-source { width: 10%;}
+    .gain { width: 7%;}
+    .offset { width: 6%;}
+    .curve { width: 10%;}
+    .min { width: 6%;}
+    .max { width: 6%;}
+    .solo { width: 6%;}
+    .reporter { width: 8%;} /* need FF fix*/
+
+    input[type=number].error  {
+      border-color: maroon;
+    }
+  }
+  .create-remove {
+    .create, .remove {
+      float: left;
+      width: 27px;
+      height: 27px;
+      padding: 0;
+      font-weight: bold;
+      text-align: center;
+      font-size: 20px !important;
+      line-height: 20px;
+      padding-bottom: 3px;
+      margin-right: 10px;
+    }
+  }
+}
+body[data-unison='off'] .modline-sets::after {
+  content: " ";
+  width: 3px;
+  position: absolute;
+  right: -15px;
+  height: 100%;
+  top: 0px;
+}
+body[data-active='A'] .modline-sets::after {
+  background-color: $kmiBlue;
+}
+body[data-active='B'] .modline-sets::after {
+  background-color: $kmiPurple;
+}
+body[data-active='C'] .modline-sets::after {
+  background-color: $kmiPink;
+}
+body[data-active='D'] .modline-sets::after {
+  background-color: $kmiOrange;
+}

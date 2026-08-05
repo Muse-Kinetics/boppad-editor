@@ -1,0 +1,94 @@
+{
+  "name": "boppad-editor-desktop",
+  "productName": "BopPad Editor",
+  "version": "1.2.0",
+  "description": "Desktop editor for Keith McMillen Instruments BopPad",
+  "license": "MPL-2.0",
+  "main": "index.js",
+  "homepage": "https://github.com/Muse-Kinetics/boppad-editor",
+  "repository": "git+ssh://git@github.com/Muse-Kinetics/boppad-editor.git",
+  "author": {
+    "name": "Andrej Hronco",
+    "email": "andrej@keithmcmillen.com",
+    "url": "https://musekinetics.com"
+  },
+  "scripts": {
+    "build": "node ./scripts/sync-renderer.js",
+    "start": "node ./scripts/sync-renderer.js && electron .",
+    "package-mac": "node release-mac.js --skip-notarize",
+    "package-mac-dist": "node release-mac.js",
+    "notarize-dmg": "node release-mac.js --skip-build --skip-package",
+    "package-win": "npm run build && electron-builder build --win --x64 --publish never",
+    "publish-github-mac": "node publish-github.js --platform mac",
+    "publish-github-win": "node publish-github.js --platform win"
+  },
+  "build": {
+    "appId": "com.keithmcmillen.BopPadEditor",
+    "productName": "BopPad Editor",
+    "electronVersion": "28.3.3",
+    "copyright": "©2026 KMI Music, Inc.",
+    "forceCodeSigning": false,
+    "files": [
+      "index.js",
+      "preload.js",
+      "modules/**/*",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Muse-Kinetics",
+        "repo": "boppad-editor"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.music",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build-assets/entitlements.mac.plist",
+      "darkModeSupport": false,
+      "target": "dmg"
+    },
+    "dmg": {
+      "contents": [
+        { "x": 130, "y": 220 },
+        { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+      ]
+    },
+    "win": {
+      "timeStampServer": "http://timestamp.globalsign.com/tsa/advanced",
+      "sign": "./signWindows.js",
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "icon": "build-assets/icons/linux"
+    },
+    "directories": {
+      "buildResources": "build-assets",
+      "output": "release"
+    }
+  },
+  "keywords": [
+    "keithmcmillen",
+    "boppad",
+    "midi",
+    "drum"
+  ],
+  "private": true,
+  "dependencies": {
+    "electron-log": "^4.4.8",
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "@electron/notarize": "^2.5.0",
+    "dotenv": "^16.4.7",
+    "electron": "28.3.3",
+    "electron-builder": "^23.0.3",
+    "electron-osx-sign": "^0.6.0",
+    "js-yaml": "^4.1.0"
+  }
+}

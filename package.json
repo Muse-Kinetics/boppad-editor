@@ -1,0 +1,32 @@
+{
+  "name": "boppad-editor-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MPL-2.0",
+  "description": "BopPad Editor — browser and Electron desktop editors for the KMI Music BopPad",
+  "author": {
+    "name": "Andrej Hronco",
+    "email": "andrej@keithmcmillen.com",
+    "url": "https://musekinetics.com"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build:web": "npm run build --workspace boppad-editor",
+    "start:web": "npm run start --workspace boppad-editor",
+    "deploy:web": "npm run deploy --workspace boppad-editor --",
+    "deploy:web:dev": "npm run deploy:dev --workspace boppad-editor --",
+    "build:deploy:web": "npm run build:deploy --workspace boppad-editor --",
+    "build:deploy:web:dev": "npm run build:deploy:dev --workspace boppad-editor --",
+    "build:desktop": "npm run build --workspace boppad-editor-desktop",
+    "start:desktop": "npm run start --workspace boppad-editor-desktop"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^11.0.0"
+  }
+}

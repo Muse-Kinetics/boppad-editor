@@ -1,0 +1,112 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2026 KMI Music, Inc.
+
+// Firmware-update overlay + progress dialog, mirroring the K-Board editor's
+// device-sync firmware UI: a greyed-out full-window overlay with a progress
+// popup (title, live chunk label, gradient progress bar, byte meter) and a
+// completion state. Driven from modules/firmwareUpdater.js.
+
+.firmware-update-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(20, 20, 20, 0.58);
+  -webkit-app-region: no-drag;
+}
+
+.firmware-update-message {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 320px;
+  max-width: 440px;
+  padding: 26px 30px;
+  border-radius: 6px;
+  background-color: rgba(35, 35, 35, 0.96);
+  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.55);
+  color: #f4f4f4;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 0.03em;
+}
+
+.firmware-update-title {
+  text-transform: uppercase;
+}
+
+.firmware-update-progress-label,
+.firmware-update-progress-meta {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  margin-top: 10px;
+  text-transform: none;
+}
+
+.firmware-update-progress-meta {
+  color: #cfcfcf;
+  margin-top: 8px;
+}
+
+.firmware-update-progress {
+  width: 100%;
+  height: 10px;
+  margin-top: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.firmware-update-progress-bar {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #5eb7ff 0%, #6dffcf 100%);
+  transition: width 80ms linear;
+}
+
+// Completion state: solid green bar + a dismiss button.
+.firmware-update-overlay.is-complete .firmware-update-progress-bar {
+  background: #6dffcf;
+}
+.firmware-update-overlay.is-error .firmware-update-progress-bar {
+  background: #ff6d6d;
+}
+
+.firmware-update-done {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: auto;
+  min-width: 120px;
+  height: auto;
+  margin: 18px 0 0 0;
+  padding: 10px 26px;
+  border: 0;
+  border-radius: 4px;
+  background-color: #5eb7ff;
+  color: #101010;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-app-region: no-drag;
+}
+.firmware-update-done:hover {
+  background-color: #6dffcf;
+}

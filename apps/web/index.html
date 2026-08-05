@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>BopPad Editor | Keith McMillen Instruments</title>
+		<meta name="description" content="BopPad Editor">
+		<meta name="application-name" content="BopPad Editor">
+		<meta property="og:locale" content="en_US" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="Keith McMillen Instruments - BopPad Editor" />
+		<meta property="og:description" content="BopPad, from Keith McMillen Instruments, is the expressive electronic drum pad for drummers, percussionists and producers" />
+		<meta property="og:url" content="https://files.keithmcmillen.com/products/boppad" />
+		<meta property="og:site_name" content="Keith McMillen Instruments" />
+		<meta property="og:image" content="https://files.keithmcmillen.com/products/boppad/icons/boppad-icon-social.png" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:description" content="BopPad, from Keith McMillen Instruments, is the expressive electronic drum pad for drummers, percussionists and producers" />
+		<meta name="twitter:title" content="Keith McMillen Instruments - MIDI Keyboards &amp; Controllers for Music Production &amp; Performance" />
+		<meta name="twitter:site" content="@keithmcmillen" />
+		<meta name="twitter:image" content="https://files.keithmcmillen.com/products/boppad/icons/boppad-icon-social.png" />
+		<meta name="twitter:creator" content="@keithmcmillen" />
+		<link rel="icon" type="image/x-icon" href="icons/favicon.ico">
+		<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+		<link rel="manifest" href="manifest.json">
+		<link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#5bbad5">
+		<meta name="theme-color" content="#ffffff">
+</head>
+<!-- data-unison is either 'off' or the value of the unison-quadrant -->
+<body data-connected=false data-active="A" data-unison="off" data-unison-quadrant="-1" data-allmode="off" data-prompt="closed">
+	<div class="container" style="-webkit-app-region: drag">
+		<header class='row'>
+			<div id="presets" class='col-xs-9'>
+				<div class="presets">
+					<div class="txt-upper presets-label">presets</div>
+					<div class="presets-box">
+						<select name="presets" id="preset_sel"></select>
+						<div class="button-group destinations">
+							<div class="send-label">Destination</div>
+							<button class="btn toggle preset-num send active" value="1">1</button>
+							<button class="btn toggle preset-num send" value="2">2</button>
+							<button class="btn toggle preset-num send" value="3">3</button>
+							<button class="btn toggle preset-num send" value="4">4</button>
+						</div><!-- /button-group -->
+						<button id="sendpreset" data-action="sendpreset" class="btn send" disabled>Send to BopPad</button>
+					</div><!-- /preset-box -->
+				</div><!-- /presets -->
+				<div class="presets user">
+					<div class="txt-upper presets-label">user</div>
+					<div class="presets-box">
+						<div class="button-group stacked">
+							<div class="button-group">
+								<button data-action="save" class="btn save" disabled>save</button>
+								<button data-action="save_as" class="btn save-as">save as</button>
+							</div>
+							<button data-action="revert" class="btn revert" disabled>revert</button>
+							<button data-action="delete" class="btn delete" disabled>delete</button>
+						</div><!-- /button-group -->
+					</div><!-- /preset-box -->
+					<div class="preset-name-form">
+						<input class='preset-name' type="text" placeholder="NAME YOUR PRESET" maxlength=16>
+						<button class="cancel">cancel</button>
+						<button class="save-preset">save</button>
+					</div>
+				</div><!-- /presets -->
+				<p class="windows-warning">If you experience connection issues or firmware updating issues, open a new tab and go to: <u>chrome://flags/#enable-midi-manager-dynamic-instantiation</u> and set it to disabled, then restart. <a href="#">hide</a></p>
+			</div>
+			<div id="logo" class='col-xs-3'>
+				<h1>BopPad</h1>
+				<span class="status-bar"></span>
+				<div id="boppad"></div>
+			</div>
+		</header>
+
+		<div id="editor" class="row">
+			<div class="col-xs-12">
+				<div class="row quadrants-header">
+					<div class="col-xs-6">
+						<h2>Quadrants</h2>
+					</div>
+					<!-- <div class="col-xs-4 help-area"></div> -->
+				</div><!-- /name-help -->
+
+				<div id='quadrants' class="section">
+					<div class="quadrant-selection">
+						<div class="quadrant-notes active" data-quadrant="A">
+							<h3>A</h3>
+							<div class="quad-note-group">
+								<div class="note-selection off"><input id="quadrant_a_note_1" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_a_note_2" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_a_note_3" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_a_note_4" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_a_note_5" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_a_note_6" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+							</div>
+							<div class="unison-cover"></div>
+						</div>
+						<div class="quadrant-notes" data-quadrant="B">
+							<h3>B</h3>
+							<div class="quad-note-group">
+								<div class="note-selection off"><input id="quadrant_b_note_1" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_b_note_2" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_b_note_3" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_b_note_4" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_b_note_5" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_b_note_6" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+							</div>
+							<div class="unison-cover"></div>
+						</div>
+						<div class="quadrant-notes" data-quadrant="C">
+							<h3>C</h3>
+								<div class="quad-note-group">
+								<div class="note-selection off"><input id="quadrant_c_note_1" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_c_note_2" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_c_note_3" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_c_note_4" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_c_note_5" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_c_note_6" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+							</div>
+							<div class="unison-cover"></div>
+						</div>
+						<div class="quadrant-notes" data-quadrant="D">
+							<h3>D</h3>
+							<div class="quad-note-group">
+								<div class="note-selection off"><input id="quadrant_d_note_1" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_d_note_2" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_d_note_3" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_d_note_4" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_d_note_5" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+								<div class="note-selection off"><input id="quadrant_d_note_6" type="number" min="-1" max="127" step="1" class="sm" value="-1"><span class="note">off</span></div>
+							</div>
+							<div class="unison-cover"></div>
+						</div>
+					</div><!-- /quadrant-section -->
+					<div class="quadrant-actions">
+						<button data-action="copy" class='btn copy'>Copy Quadrant</button>
+						<button data-action="paste" class='btn paste' disabled>Paste Quadrant</button>
+						<button data-action="clear" class='btn clear'>Clear Quadrant</button>
+						<button data-action="clear_all" class='btn clear_all'>Clear All Quadrants</button>
+					</div><!-- /quadrant actions -->
+					<div class="quadrant-voices">
+						<div class="feature-group">
+							<div class="feature midi-channel">
+								<div class="label">MIDI Channel</div>
+								<div class="feature-wrap channel-wrap active" data-quadrant="A">
+									<div class="number-input"><input id="quadrant_a_channel" type="number" class="voice-channel" min="1" max="16" value="1"></div>
+								</div>
+								<div class="feature-wrap channel-wrap" data-quadrant="B">
+									<div class="number-input"><input id="quadrant_b_channel" type="number" class="voice-channel" min="1" max="16" value="1"></div>
+								</div>
+								<div class="feature-wrap channel-wrap" data-quadrant="C">
+									<div class="number-input"><input id="quadrant_c_channel" type="number" class="voice-channel" min="1" max="16" value="1"></div>
+								</div>
+								<div class="feature-wrap channel-wrap" data-quadrant="D">
+									<div class="number-input"><input id="quadrant_d_channel" type="number" class="voice-channel" min="1" max="16" value="1"></div>
+								</div>
+							</div>
+							<div class="feature bank-select">
+								<div class="label">Bank Select</div>
+								<div class="feature-wrap bank-wrap active" data-quadrant="A">
+									<div class="number-input"><input id="quadrant_a_bank_select" type="number" class="voice-bank-select" min="-1" max="127" value="-1"><span class="state">off</span></div>
+								</div>
+								<div class="feature-wrap bank-wrap" data-quadrant="B">
+									<div class="number-input"><input id="quadrant_b_bank_select" type="number" class="voice-bank-select" min="-1" max="127" value="-1"><span class="state">off</span></div>
+								</div>
+								<div class="feature-wrap bank-wrap" data-quadrant="C">
+									<div class="number-input"><input id="quadrant_c_bank_select" type="number" class="voice-bank-select" min="-1" max="127" value="-1"><span class="state">off</span></div>
+								</div>
+								<div class="feature-wrap bank-wrap" data-quadrant="D">
+									<div class="number-input"><input id="quadrant_d_bank_select" type="number" class="voice-bank-select" min="-1" max="127" value="-1"><span class="state">off</span></div>
+								</div>
+							</div>
+						</div>
+						<div class="feature-group">
+							<div class="feature program-change">
+								<div class="label">Program Change</div>
+								<div class="feature-wrap program-wrap active" data-quadrant="A">
+									<div class="number-input"><input id="quadrant_a_program_change" type="number" class="voice-program-change" min="-1" max="127" value="-1"><span class="state">off</span></div>
+								</div>
+								<div class="feature-wrap program-wrap" data-quadrant="B">
+									<div class="number-input"><input id="quadrant_b_program_change" type="number" class="voice-program-change" min="-1" max="127" value="-1"><span class="state">off</span></div>
+								</div>
+								<div class="feature-wrap program-wrap" data-quadrant="C">
+									<div class="number-input"><input id="quadrant_c_program_change" type="number" class="voice-program-change" min="-1" max="127" value="-1"><span class="state">off</span></div>
+								</div>
+								<div class="feature-wrap program-wrap" data-quadrant="D">
+									<div class="number-input"><input id="quadrant_d_program_change" type="number" class="voice-program-change" min="-1" max="127" value="-1"><span class="state">off</span></div>
+								</div>
+							</div>
+							<div class="feature midi-channel">
+								<div class="label">Strike Density</div>
+								<div class="feature-wrap density-wrap active" data-quadrant="A">
+									<select class="voice-density" id="quadrant_a_debounce_refill">
+										<option value="2">Extreme</option>
+										<option value="11" selected>High</option>
+										<option value="15">Medium</option>
+										<option value="30">Low</option>
+									</select>
+								</div>
+								<div class="feature-wrap density-wrap" data-quadrant="B">
+									<select class="voice-density" id="quadrant_b_debounce_refill">
+										<option value="2">Extreme</option>
+										<option value="11" selected>High</option>
+										<option value="15">Medium</option>
+										<option value="30">Low</option>
+									</select>
+								</div>
+								<div class="feature-wrap density-wrap" data-quadrant="C">
+									<select class="voice-density" id="quadrant_c_debounce_refill">
+										<option value="2">Extreme</option>
+										<option value="11" selected>High</option>
+										<option value="15">Medium</option>
+										<option value="30">Low</option>
+									</select>
+								</div>
+								<div class="feature-wrap density-wrap" data-quadrant="D">
+									<select class="voice-density" id="quadrant_d_debounce_refill">
+										<option value="2">Extreme</option>
+										<option value="11" selected>High</option>
+										<option value="15">Medium</option>
+										<option value="30">Low</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="feature-group">
+							<div class="feature quadrant-sensitivity">
+								<div class="label full">Sensitivity</div>
+								<div class="feature-wrap sensitivity-wrap active" data-quadrant="A">
+									<div class="number-input">
+										<input data-action="quadrant-sensitivity" id="quadrant_a_sensitivity" type="number" class="voice-sensitivity" min="1" max="10" value="">
+									</div>
+								</div>
+								<div class="feature-wrap sensitivity-wrap" data-quadrant="B">
+									<div class="number-input">
+										<input data-action="quadrant-sensitivity" id="quadrant_b_sensitivity" type="number" class="voice-sensitivity" min="1" max="10" value="">
+									</div>
+								</div>
+								<div class="feature-wrap sensitivity-wrap" data-quadrant="C">
+									<div class="number-input">
+										<input data-action="quadrant-sensitivity" id="quadrant_c_sensitivity" type="number" class="voice-sensitivity" min="1" max="10" value="">
+									</div>
+								</div>
+								<div class="feature-wrap sensitivity-wrap" data-quadrant="D">
+									<div class="number-input">
+										<input data-action="quadrant-sensitivity" id="quadrant_d_sensitivity" type="number" class="voice-sensitivity" min="1" max="10" value="">
+									</div>
+								</div>
+							</div>
+							<div class="feature quadrant-gain">
+								<div class="label full">Gain</div>
+								<div class="feature-wrap gain-wrap active" data-quadrant="A">
+									<div class="number-input">
+										<input data-action="quadrant-gain" id="quadrant_a_gain" type="number" class="voice-gain" step="0.05" min="0.25" max="1.75" value="1.00">
+									</div>
+								</div>
+								<div class="feature-wrap gain-wrap" data-quadrant="B">
+									<div class="number-input">
+										<input data-action="quadrant-gain" id="quadrant_b_gain" type="number" class="voice-gain" step="0.05" min="0.25" max="1.75" value="1.00">
+									</div>
+								</div>
+								<div class="feature-wrap gain-wrap" data-quadrant="C">
+									<div class="number-input">
+										<input data-action="quadrant-gain" id="quadrant_c_gain" type="number" class="voice-gain" step="0.05" min="0.25" max="1.75" value="1.00">
+									</div>
+								</div>
+								<div class="feature-wrap gain-wrap" data-quadrant="D">
+									<div class="number-input">
+										<input data-action="quadrant-gain" id="quadrant_d_gain" type="number" class="voice-gain" step="0.05" min="0.25" max="1.75" value="1.00">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="feature-group wide">
+							<div class="feature quadrant-full-volume">
+								<div class="label full">Full Volume Change</div>
+								<div class="feature-wrap full-volume-wrap active" data-quadrant="A">
+									<button id="quadrant_a_full_vol_change" class="btn toggle full-vol-change" value="-1" data-action="full-vol-change">Disabled</button>
+								</div>
+								<div class="feature-wrap full-volume-wrap" data-quadrant="B">
+									<button id="quadrant_b_full_vol_change" class="btn toggle full-vol-change" value="-1" data-action="full-vol-change">Disabled</button>
+								</div>
+								<div class="feature-wrap full-volume-wrap" data-quadrant="C">
+									<button id="quadrant_c_full_vol_change" class="btn toggle full-vol-change" value="-1" data-action="full-vol-change">Disabled</button>
+								</div>
+								<div class="feature-wrap full-volume-wrap" data-quadrant="D">
+									<button id="quadrant_d_full_vol_change" class="btn toggle full-vol-change" value="-1" data-action="full-vol-change">Disabled</button>
+								</div>
+							</div>
+							<div class="feature quadrant-vel-override">
+								<div class="label full">Velocity Override</div>
+								<div class="feature-wrap vel-override-wrap active" data-quadrant="A">
+									<button id="quadrant_a_velocity_override" class="btn toggle vel-override" value="-1" data-action="vel-override">Disabled</button>
+								</div>
+								<div class="feature-wrap vel-override-wrap" data-quadrant="B">
+									<button id="quadrant_b_velocity_override" class="btn toggle vel-override" value="-1" data-action="vel-override">Disabled</button>
+								</div>
+								<div class="feature-wrap vel-override-wrap" data-quadrant="C">
+									<button id="quadrant_c_velocity_override" class="btn toggle vel-override" value="-1" data-action="vel-override">Disabled</button>
+								</div>
+								<div class="feature-wrap vel-override-wrap" data-quadrant="D">
+									<button id="quadrant_d_velocity_override" class="btn toggle vel-override" value="-1" data-action="vel-override">Disabled</button>
+								</div>
+							</div>
+						</div>
+					</div><!-- /.quadrant-voices -->
+				</div><!-- /quadrants -->
+				<div id="keyboard" class="row section"></div>
+				<div id="modline" class="section">
+					<div class="clearfix modline-labels">
+						<div class="label type">Message Type</div>
+						<div class="label mod-voice">Source</div>
+						<div class="label invert-source">Invert Source</div>
+						<div class="label gain">Gain</div>
+						<div class="label offset">Offset</div>
+						<div class="label curve">Curve</div>
+						<div class="label min">Min</div>
+						<div class="label max">Max</div>
+						<div class="label solo">Solo</div>
+						<div class="label reporter">Live Value</div>
+					</div>
+					<div class="modline-sets active" data-quadrant="A">
+						<div class="clearfix modline master default" data-modcount="1">
+							<input id="quadrant_a_modline_1_message_type" class="note type" type="text" value="Note" disabled>
+							<select class="mod-voice" name="" id="quadrant_a_modline_1_source">
+								<option value="-1" selected>Off</option>
+								<option value="0">Velocity</option>
+								<option value="2">Pressure</option>
+								<option value="4">Initial Radius</option>
+								<option value="6">Radius</option>
+								<option value="8">Radius (rel)</option>
+							</select>
+							<button id="quadrant_a_modline_1_invert_source" class="btn toggle invert-source" value="-1">Invert</button>
+							<input id="quadrant_a_modline_1_gain" class="gain" type="number" min="0.1" max="1.75" step="0.01" value="1.00">
+							<input id="quadrant_a_modline_1_offset" class="offset" type="number" min="0" max="" step="1" value="0">
+							<select class="curve" name="" id="quadrant_a_modline_1_table">
+								<option value="0" selected>Linear</option>
+								<option value="1">Logarithmic</option>
+								<option value="2">Exponential</option>
+								<option value="3">Light</option>
+								<option value="4">Medium</option>
+								<option value="5">Hard</option>
+								<option value="6">Dynamic</option>
+								<option value="7">User Table 1</option>
+								<option value="8">User Table 2</option>
+								<option value="9">User Table 3</option>
+								<option value="10">User Table 4</option>
+							</select>
+							<input id="quadrant_a_modline_1_min" class="min" type="number" min="1" max="127" step="1" value="1">
+							<input id="quadrant_a_modline_1_max" class="max" type="number" min="1" max="127" step="1" value="127">
+							<button id="quadrant_a_modline_1_solo" class="btn toggle solo" value="-1">Solo</button>
+							<input class='reporter' type="text">
+						</div><!-- /modline -->
+					</div><!-- /modline-sets -->
+					<div class="modline-sets" data-quadrant="B">
+						<div class="clearfix modline master default" data-modcount="1">
+							<input id="quadrant_b_modline_1_message_type" class="note type" type="text" value="Note" disabled>
+							<select class="mod-voice" name="" id="quadrant_b_modline_1_source">
+								<option value="-1" selected>Off</option>
+								<option value="0">Velocity</option>
+								<option value="2">Pressure</option>
+								<option value="4">Initial Radius</option>
+								<option value="6">Radius</option>
+								<option value="8">Radius (rel)</option>
+							</select>
+							<button id="quadrant_b_modline_1_invert_source" class="btn toggle invert-source" value="-1">Invert</button>
+							<input id="quadrant_b_modline_1_gain" class="gain" type="number" min="0.1" max="1.75" step="0.01" value="1.00">
+							<input id="quadrant_b_modline_1_offset" class="offset" type="number" min="0" max="" step="1" value="0">
+							<select class="curve" name="" id="quadrant_b_modline_1_table">
+								<option value="0" selected>Linear</option>
+								<option value="1">Logarithmic</option>
+								<option value="2">Exponential</option>
+								<option value="3">Light</option>
+								<option value="4">Medium</option>
+								<option value="5">Hard</option>
+								<option value="6">Dynamic</option>
+								<option value="7">User Table 1</option>
+								<option value="8">User Table 2</option>
+								<option value="9">User Table 3</option>
+								<option value="10">User Table 4</option>
+							</select>
+							<input id="quadrant_b_modline_1_min" class="min" type="number" min="0" max="127" step="1" value="0">
+							<input id="quadrant_b_modline_1_max" class="max" type="number" min="0" max="127" step="1" value="127">
+							<button id="quadrant_b_modline_1_solo" class="btn toggle solo" value="-1">Solo</button>
+							<input class='reporter' type="text">
+						</div><!-- /modline -->
+					</div><!-- /modline-sets -->
+					<div class="modline-sets" data-quadrant="C">
+						<div class="clearfix modline master default" data-modcount="1">
+							<input id="quadrant_c_modline_1_message_type" class="note type" type="text" value="Note" disabled>
+							<select class="mod-voice" name="" id="quadrant_c_modline_1_source">
+								<option value="-1" selected>Off</option>
+								<option value="0">Velocity</option>
+								<option value="2">Pressure</option>
+								<option value="4">Initial Radius</option>
+								<option value="6">Radius</option>
+								<option value="8">Radius (rel)</option>
+							</select>
+							<button id="quadrant_c_modline_1_invert_source" class="btn toggle invert-source" value="-1">Invert</button>
+							<input id="quadrant_c_modline_1_gain" class="gain" type="number" min="0.1" max="1.75" step="0.01" value="1.00">
+							<input id="quadrant_c_modline_1_offset" class="offset" type="number" min="0" max="" step="1" value="0">
+							<select class="curve" name="" id="quadrant_c_modline_1_table">
+								<option value="0" selected>Linear</option>
+								<option value="1">Logarithmic</option>
+								<option value="2">Exponential</option>
+								<option value="3">Light</option>
+								<option value="4">Medium</option>
+								<option value="5">Hard</option>
+								<option value="6">Dynamic</option>
+								<option value="7">User Table 1</option>
+								<option value="8">User Table 2</option>
+								<option value="9">User Table 3</option>
+								<option value="10">User Table 4</option>
+							</select>
+							<input id="quadrant_c_modline_1_min" class="min" type="number" min="0" max="127" step="1" value="0">
+							<input id="quadrant_c_modline_1_max" class="max" type="number" min="0" max="127" step="1" value="127">
+							<button id="quadrant_c_modline_1_solo" class="btn toggle solo" value="-1">Solo</button>
+							<input class='reporter' type="text">
+						</div><!-- /modline -->
+					</div><!-- /modline-sets -->
+					<div class="modline-sets" data-quadrant="D">
+						<div class="clearfix modline master default" data-modcount="1">
+							<input id="quadrant_d_modline_1_message_type" class="note type" type="text" value="Note" disabled>
+							<select class="mod-voice" name="" id="quadrant_d_modline_1_source">
+								<option value="-1" selected>Off</option>
+								<option value="0">Velocity</option>
+								<option value="2">Pressure</option>
+								<option value="4">Initial Radius</option>
+								<option value="6">Radius</option>
+								<option value="8">Radius (rel)</option>
+							</select>
+							<button id="quadrant_d_modline_1_invert_source" class="btn toggle invert-source" value="-1">Invert</button>
+							<input id="quadrant_d_modline_1_gain" class="gain" type="number" min="0.1" max="1.75" step="0.01" value="1.00">
+							<input id="quadrant_d_modline_1_offset" class="offset" type="number" min="0" max="127" step="1" value="0">
+							<select class="curve" name="" id="quadrant_d_modline_1_table">
+								<option value="0" selected>Linear</option>
+								<option value="1">Logarithmic</option>
+								<option value="2">Exponential</option>
+								<option value="3">Light</option>
+								<option value="4">Medium</option>
+								<option value="5">Hard</option>
+								<option value="6">Dynamic</option>
+								<option value="7">User Table 1</option>
+								<option value="8">User Table 2</option>
+								<option value="9">User Table 3</option>
+								<option value="10">User Table 4</option>
+							</select>
+							<input id="quadrant_d_modline_1_min" class="min" type="number" min="1" max="127" step="1" value="1">
+							<input id="quadrant_d_modline_1_max" class="max" type="number" min="1" max="127" step="1" value="127">
+							<button id="quadrant_d_modline_1_solo" class="btn toggle solo" value="-1">Solo</button>
+							<input class='reporter' type="text">
+						</div><!-- /modline -->
+					</div><!-- /modline-sets -->
+					<div class="clearfix create-remove">
+						<button data-action="create" class="create">+</button>
+						<button data-action="remove" class="remove">-</button>
+					</div>
+				</div><!-- /#modline -->
+				<div id="global_settings" class="section">
+					<h2>Device Settings</h2>
+					<div class="control-group globals">
+						<div class="control-set">
+							<div class="control unison">
+								<div class="label">Unison Mode</div>
+									<button id="unison" data-action="unison-toggle" data-on-values="0,1,2,3" class="btn unison-toggle" value="-1">Disabled</button>
+							</div>
+							<div class="control all-mode">
+								<div class="label">All Quadrant Mode</div>
+									<button id="allmode" data-action="all-mode-toggle" class="btn toggle all-mode-toggle" value="-1">Disabled</button>
+							</div>
+						</div>
+					</div>
+					<div class="control-group prefs-usertables" id="preferences">
+						<div class="control preferences">
+								<button id="preferences_btn" data-action="prefs">Preferences</button>
+						</div>
+						<div class="control usertables">
+								<button id="usertables_btn" data-action='usertables'>User Tables</button>
+						</div>
+					</div>
+				</div>
+			</div><!-- /col-xs-12 container -->
+		</div><!-- /editor -->
+	</div>
+
+	<div id="prefs" class="modal-pre-content">
+		<div class="pref versions">
+			<p>versions: <span class="updating-status"></span>
+				<span class="editor-version">editor: <span class="version">1.1.1</span></span>
+				<span class="firmware-version">firmware: <span class="version">0.0.0</span></span>
+			</p>
+		</div>
+		<div class="prefs">
+			<div class="pref-group global-sensitivity">
+				<div class="pref sensitivity">
+					<div class="label">Global Sensitivity <span class="value"></span></div>
+						<div class="slider-buttons">
+							<button class="nostyle decrease" data-action="decrease">&mdash;</button>
+							<input data-action="global-sensitivity" id="sensitivity_global" class="slider" type="range" step="1" min="1" max="100" value="16" />
+							<button class="nostyle increase" data-action="increase">+</button>
+						</div>
+						<button data-action="reset-global-sensitivity" class="reset-global-sensitvity">Reset Global Sensitivity</button>
+				</div>
+			</div>
+			<div class="pref-group narrow multitouch-crosstalk">
+				<div class="pref multitouch">
+					<div class="label">Multitouch</div>
+					<button data-action="multitouch-toggle" id="multitouch_enable" class="btn toggle multitouch" value="-1">Disabled</button>
+				</div>
+				<div class="pref crosstalk">
+					<div class="label">Crosstalk Cancellation</div>
+					<button data-action="crosstalk-toggle" id="crosstalk" class="btn toggle crosstalk" data-on-values="50," value="-1">Disabled</button>
+				</div>
+			</div>
+			<div class="pref-group narrow expander-unique">
+				<div class="pref expandermode">
+					<div class="label">MIDI Expander Mode</div>
+					<button class="btn toggle expander" data-action='expandermode' id="expander" value="-1">Disabled</button>
+				</div>
+				<div class="pref change-filter">
+					<div class="label">Unique Message Values</div>
+					<button class="btn change-filter" data-action='change-filter' id="change_filter" value="-1">Disabled</button>
+				</div>
+			</div>
+			<div class="pref-group export-tooltips">
+				<div class="pref export">
+					<div class="label">Export User Presets</div>
+					<button class="btn export" data-action='exportpresets'>Export</button>
+				</div>
+				<div class="pref tooltips">
+					<div class="label">Tooltips</div>
+					<button class="btn tooltips" data-action='tooltips' id="tooltips" value="-1">Disabled</button>
+				</div>
+			</div>
+			<div class="pref-group midi-thru">
+				<div class="pref midithru">
+					<div class="label">MIDI Thru</div>
+					<select id="midithru" name="midithru" disabled>
+						<option value="none" label="None"></option>
+					</select>
+				</div>
+				<div class="pref firmware">
+					<div class="label">Device Firmware</div>
+					<button class="btn" data-action="firmware" disabled>Update Firmware</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="usercurves" class="modal-pre-content">
+		<div class="usercurves">
+			<div class="table-buttons"></div>
+			<div id="velocitycurves"></div>
+			<div class="form" data-selectedTable="User Table 1">
+				<select id="curveSelect">
+				</select>
+				<div class="buttons">
+					<button class="btn save-curve" data-action="save-curve">save</button>
+					<button class="btn reset-curve" data-action="reset-curve">reset</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal">
+		<div class="modal-inner">
+			<span data-modal-close>&times;</span>
+			<div class="modal-content"></div>
+		</div>
+	</div>
+
+	<dialog id="upgradeNotice">
+		<p>Your firmware is incompatible with this editor and must be updated to continue.</p>
+		<form method="dialog">
+			<button id="closeDialogBtn">Close Editor</button>
+			<button id="updateDialogBtn" value="default">Update Firmware</button>
+		</form>
+	</dialog>
+
+<script>
+if(isElectron()){
+	const { ipcRenderer } = require('electron');
+
+	ipcRenderer.on('firmware-update', function() {
+  	console.log('>> updating-firmware');
+		globalThis.FWU('BopPad')
+	});
+
+	ipcRenderer.on('preset-export', function() {
+		console.log('>> exporting presets');
+		globalThis.exportLocalStorage()
+	});
+
+	ipcRenderer.on('preset-import', function(event, presets) {
+		console.log('>> importing preset');
+		globalThis.importLocalStorage(presets)
+	});
+
+	ipcRenderer.on('preferences', function() {
+		console.log('>> open preferences');
+		document.getElementById('preferences_btn').click();
+	});
+
+	ipcRenderer.on('usertables', function() {
+		console.log('>> open usertables');
+		document.getElementById('usertables_btn').click();
+	});
+
+	ipcRenderer.on('toggle-tooltips', function(event, state) {
+		console.log('>> toggling tooltips');
+		globalThis.toggleTooltips(state)
+	});
+
+	ipcRenderer.on('downloading-update', function(event) {
+		console.log('>> downloading-update');
+		document.querySelector('.status-bar').classList.add('downloading-update')
+	});
+
+	ipcRenderer.on('downloading-update-complete', function(event) {
+		console.log('>> downloading-update-complete');
+		document.querySelector('.status-bar').classList.remove('downloading-update')
+	});
+}
+
+	function isElectron() {
+		// Renderer process
+		if (typeof window !== 'undefined' && typeof window.process === 'object' && window.process.type === 'renderer') {
+			return true;
+		}
+
+		// Main process
+		if (typeof process !== 'undefined' && typeof process.versions === 'object' && !!process.versions.electron) {
+			return true;
+		}
+
+		// Detect the user agent when the `nodeIntegration` option is set to false
+		if (typeof navigator === 'object' && typeof navigator.userAgent === 'string' && navigator.userAgent.indexOf('Electron') >= 0) {
+			return true;
+		}
+
+		return false;
+	}
+</script>
+<script>
+	if(!isElectron() && window.location.hostname != 'localhost'){
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+		ga('create', 'UA-6182397-10', 'auto');
+		ga('send', 'pageview');
+	}
+
+</script>
+</body>
+</html>

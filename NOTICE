@@ -1,0 +1,17 @@
+BopPad Editor
+
+Copyright (c) 2026 KMI Music, Inc.
+
+Author: Andrej Hronco
+
+Project license: MPL-2.0
+
+Trademarks: "BopPad", "KMI", "KMI Music", and "Muse Kinetics", along with
+associated logos and brand assets, are trademarks of KMI Music, Inc. The MPL-2.0
+license applies to the source code only and grants no rights to use these marks.
+
+Third-party notices:
+- The UI bundles third-party open-source libraries (e.g. jQuery, Bootstrap,
+  NexusUI, Snap.svg, tippy.js). Their respective licenses apply; a complete
+  third-party license inventory will be maintained here as the dependency set is
+  modernized.

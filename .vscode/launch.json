@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "BopPad: Debug Desktop (Electron Main)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+      },
+      "program": "${workspaceFolder}/apps/desktop/index.js",
+      "cwd": "${workspaceFolder}/apps/desktop",
+      "preLaunchTask": "BopPad: Build Desktop",
+      "console": "integratedTerminal",
+      "outputCapture": "std"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "boppad-js-api",
+  "version": "0.1.0",
+  "description": "Headless device layer for the KMI Music BopPad: SysEx chunking codec and chunked, local-first firmware transfer.",
+  "license": "MPL-2.0",
+  "type": "module",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "keithmcmillen",
+    "boppad",
+    "midi",
+    "firmware",
+    "sysex"
+  ],
+  "author": {
+    "name": "KMI Music, Inc.",
+    "url": "https://musekinetics.com"
+  },
+  "private": true
+}

@@ -1,0 +1,153 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2026 KMI Music, Inc.
+
+// prefeneces modal
+.preferences {
+
+  .modal-inner {
+    width: 515px;
+    height: auto;
+    padding: 0;
+    font-weight: 100;
+    // overflow: hidden;
+  }
+
+  input.slider {
+    margin-bottom: 10px;
+  }
+  input.slider::before, input.slider::after {
+    position: relative;
+    top: 0px;
+    color: white;
+    font-size: 20px;
+    line-height: 17px;
+    font-weight: 100;
+  }
+  .slider-buttons {
+    position: relative;
+  }
+  .slider-buttons input {
+    z-index: 10;
+  }
+  .slider-buttons button {
+    position: absolute;
+    top: 0;
+    width: 30px;
+    height: 20px;
+  }
+  .slider-buttons button:hover {
+    background-color: transparent;
+  }
+  .slider-buttons .decrease {
+    left: -22px;
+  }
+  .slider-buttons .increase {
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 100;
+    right: -24px;
+  }
+}
+
+.prefs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 0 10px;
+
+  h2 {
+    flex: 0 0 100%;
+  }
+
+  .pref-group {
+    flex: 1;
+    padding: 10px;
+    border-bottom: 1px dashed #666;
+
+    &:last-child {
+      border-bottom: none;
+    }
+    &.narrow {
+      padding-left: 5px;
+      padding-right: 5px;
+      margin-right: 5px;
+
+      .pref button {
+        max-width: 130px;
+      }
+    }
+    &.expander-unique {
+      margin-left: 5px;
+      margin-right: 0;
+    }
+
+    &.global-sensitivity {
+      flex: 0 0 38%;
+      margin-right: 10px;
+    }
+
+    .pref {
+      margin-bottom: 10px;
+
+      &.midithru {
+        margin-bottom: 8px;
+      }
+
+      .reset-global-sensitvity {
+        margin-top: 38px;
+      }
+
+      .label {
+        text-transform: uppercase;
+        padding: 0;
+        font-weight: 100;
+        font-size: 10px;
+        line-height: 24px;
+      }
+
+      button {
+        padding: 0;
+        text-transform: uppercase;
+        max-width: 223px;
+        &:disabled {
+          color: white;
+        }
+      }
+
+      select {
+        max-width: 223px;
+      }
+    }
+  }
+  .pref-group:last-child {
+    padding-right: 0;
+  }
+}
+body[data-connected="false"] button[data-action="firmware"] {
+  color: red;
+}
+.versions {
+  font-weight: bold;
+  font-size: 10px;
+  text-transform: uppercase;
+  padding-left: 18px;
+
+  p {
+    margin: 10px 0 0 0;
+  }
+  span.updating-status {
+    font-family: sans-serif;
+    font-weight: bold;
+    color: green;
+    padding-left: 3px;
+  }
+  span:not(.version) {
+    padding-right: 2px;
+  }
+}
+
+.electron {
+  .pref-group.midi-thru .firmware, .pref-group.export-tooltips {
+    display: none;
+  }
+}

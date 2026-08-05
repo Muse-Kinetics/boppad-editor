@@ -1,0 +1,17 @@
+{
+  "firmware": {
+    "requestID": [240, 126, 127, 6, 1, 247],
+    "url": "firmware/BopPad Firmware v3.0.4_cs128.syx",
+    "version": "3.0.4",
+    "versionBytes": [15, 16, 17],
+    "transferMode": "single-file",
+    "chunkSize": 128,
+    "bootloader": {
+      "bootloaderDevice": true,
+      "enterBootloaderCommandUrl": "firmware/BopPad_loadBootloader.syx",
+      "version": "1.0.3",
+      "versionBytes": [12, 13, 14],
+      "modeByte": 9
+    }
+  }
+}

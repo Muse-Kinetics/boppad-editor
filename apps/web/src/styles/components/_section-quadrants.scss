@@ -1,0 +1,244 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2026 KMI Music, Inc.
+
+.quadrants-header {
+	height: 45px;
+}
+#quadrants {
+	display: flex;
+	padding-top: 0;
+}
+.quadrant-selection {
+	flex: 3 1 24%;
+	display: flex;
+	min-width: 1%; // ff fix
+	padding-top: 2px;
+}
+.quadrant-notes {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	padding: 0;
+	margin-right: 5px;
+	min-width: 1%; // ff fix
+}
+.quadrant-notes:last-child {
+	margin-right: 0;
+}
+.quadrant-notes h3 {
+	margin-top: 0;
+	text-align: center;
+	font-weight: 100;
+	cursor: pointer;
+}
+body[data-unison="on"] .quadrant-notes:not(.unison) h3 {
+	font-size: 20px;
+	line-height: 26px;
+}
+.quad-note-group {
+	background-color: #ebebec;
+	padding: 7.5px 0 7.5px 0;
+	border-radius: 2px;
+}
+.unison-cover {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #2d2d2d;
+	opacity: 0;
+	width: 100%;
+	height: 0;
+	transition: all 1s ease-in-out;
+}
+body[data-unison='on'] .quadrant-notes.unison .unison-cover {
+	height: 100%;
+	opacity: 0.9;
+}
+body[data-active='A'] .quadrant-notes.active .quad-note-group {
+	background-color: $kmiBlue;
+}
+body[data-active='B'] .quadrant-notes.active .quad-note-group {
+	background-color: $kmiPurple;
+}
+body[data-active='C'] .quadrant-notes.active .quad-note-group {
+	background-color: $kmiPink;
+}
+body[data-active='D'] .quadrant-notes.active .quad-note-group {
+	background-color: $kmiOrange;
+}
+.note-selection {
+	display: flex;
+	align-items: center;
+	margin: 0 5px;
+	background-color: #4a4a4a;
+	border: 2px solid white;
+
+	&.error {
+		border-color: maroon !important;
+	}
+
+	input {
+		// flex: 1;
+		width: 60%;
+		height: 25px;
+		padding: 0 0 0 5px;
+		border: 0;
+	}
+	input:focus {
+		background-color: transparent;
+	}
+	.note {
+		font-size: 9px;
+		flex: 1;
+		text-align: center;
+	}
+}
+body[data-active='A'] .active .note-selection {
+	border-color: $kmiBlue;
+}
+body[data-active='B'] .active .note-selection {
+	border-color: $kmiPurple;
+}
+body[data-active='C'] .active .note-selection {
+	border-color: $kmiPink;
+}
+body[data-active='D'] .active .note-selection {
+	border-color: $kmiOrange;
+}
+.note-selection.off {
+	color: #666;
+
+}
+.quadrant-actions {
+	flex: 2 1 10%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 37px;
+	padding: 1px 17px 7px 17px;
+	min-width: 1%; // ff fix
+
+	button {
+		margin-bottom: 5px;
+		flex: 1;
+	}
+	button:last-child {
+		margin-bottom: 0;
+	}
+}
+.quadrant-voices {
+	position: relative;
+	flex: 1 1 20%;
+	border-left: 1px dashed #666;
+	padding-left: 17px;
+	padding-right: 0;
+	margin-top: 18px;
+	min-width: 1%; // ff fix
+
+	.feature-group {
+		display: flex;
+		margin-bottom: 3px;
+		// justify-content: space-between;
+
+		.feature {
+			margin-bottom: 4px;
+			// display: flex;
+			align-items: baseline;
+			flex: 0 0 50%;
+		}
+		.wide .feature {
+			flex: 0 0 50%;
+		}
+	}
+
+	.feature-label {
+		display: flex;
+		align-items: flex-start;
+	}
+	.label-spacer {
+		flex-grow: 2;
+		flex-basis: 50%;
+		height: 20px;
+	}
+	.label-voice {
+		flex-grow: 1;
+		flex-basis: 25%;
+		font-size: 10px;
+		text-align: center;
+	}
+	.feature {
+		margin-bottom: 4px;
+		// display: flex;
+		align-items: baseline;
+		// flex: 0 0 33%;
+	}
+
+	.label {
+		flex-grow: 2;
+		flex-basis: 65%;
+		font-size: 10px;
+		line-height: 12px;
+		font-weight: 100;
+		text-align: left;
+		padding-left: 0;
+		display: inline-block;
+	}
+	input {
+		flex-grow: 1;
+		flex-basis: 30%;
+		min-width: 1px; // firefox flexbox fix
+	}
+	.feature-wrap .number-input, .feature-wrap button {
+		flex-basis: 93%;
+		margin-left: 0;
+	}
+	.feature-wrap {
+		// flex-basis: 40%;
+		display: none;
+		min-width: 1%; // ff fix
+	}
+	.feature-wrap.active {
+		display: flex;
+	}
+	.feature-wrap .number-input.off {
+		color: #666;
+	}
+	.channel-wrap {
+		// width: 50%;
+	}
+}
+body[data-unison='off'] .quadrant-voices::after {
+	content: " ";
+	width: 3px;
+	position: absolute;
+	right: -15px;
+	height: 90%;
+	top: 20px;
+}
+.quadrant-voices input:focus {
+	background-color: #4a4a4a;
+}
+body[data-active='A'] .quadrant-voices::after {
+	background-color: $kmiBlue;
+}
+body[data-active='B'] .quadrant-voices::after {
+	background-color: $kmiPurple;
+}
+body[data-active='C'] .quadrant-voices::after {
+	background-color: $kmiPink;
+}
+body[data-active='D'] .quadrant-voices::after {
+	background-color: $kmiOrange;
+}
+
+.volume-override-wrap {
+  display: none;
+}
+.volume-override-wrap.active {
+  display: block;
+}
+
+.density-wrap select {
+	flex-basis: 93%;
+}

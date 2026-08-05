@@ -1,0 +1,19 @@
+node_modules/
+
+# Local env — NEVER commit (contains signing/notarization secrets).
+.env
+.env.*
+!.env.example
+
+# Build output
+build/
+dist/
+release/
+renderer/
+
+# Editor / OS cruft
+.DS_Store
+*.log
+
+# Internal working files (kept local, not for the public repo)
+.buddy-project/

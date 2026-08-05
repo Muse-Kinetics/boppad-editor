@@ -1,0 +1,49 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2026 KMI Music, Inc.
+
+* {
+	outline: none;
+}
+html {
+	-ms-overflow-style: -ms-autohiding-scrollbar;
+}
+body {
+	font-family: 'Lato', sans-serif;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	background-color: $backgroundColor;
+	color: white;
+}
+body.electron {
+	padding-top: 44px;
+	-webkit-app-region: drag;
+}
+.container {
+	width: 800px;
+	margin: 0 auto;
+}
+.electron .container {
+	overflow-x: hidden;
+}
+h2 {
+	margin:0;
+	font-weight: 100;
+}
+.txt-upper {
+	text-transform: uppercase;
+}
+#editor {
+	border: 10px solid $borderColor;
+	padding: 10px;
+	box-shadow: 0 0 20px #111;
+}
+.section {
+	padding-top: 10px;
+	margin-bottom: 15px;
+}
+.section:last-child {
+	margin-bottom: 0px;
+}
+img.svg, svg {
+	opacity: 0;
+}

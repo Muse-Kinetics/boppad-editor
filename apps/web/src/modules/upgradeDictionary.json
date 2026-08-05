@@ -1,0 +1,34 @@
+{
+	"2.1.0": {
+    "info": "replace 'reservedBytes[0]' with 'change_filter'",
+    "action": "replace",
+		"dictionary": {
+			"reservedBytes[0]": {
+				"id": "change_filter",
+				"defaultValue": 0
+			}
+		}
+	},
+  "3.0.0": {
+    "info": "append 'presetName' bytes",
+    "action": "append",
+    "dictionary": {
+      "presetName[0]": "",
+      "presetName[1]": "",
+      "presetName[2]": "",
+      "presetName[3]": "",
+      "presetName[4]": "",
+      "presetName[5]": "",
+      "presetName[6]": "",
+      "presetName[7]": "",
+      "presetName[8]": "",
+      "presetName[9]": "",
+      "presetName[10]": "",
+      "presetName[11]": "",
+      "presetName[12]": "",
+      "presetName[13]": "",
+      "presetName[14]": "",
+      "presetName[15]": ""
+    }
+  }
+}

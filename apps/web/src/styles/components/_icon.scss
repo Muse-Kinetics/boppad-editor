@@ -1,0 +1,200 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2026 KMI Music, Inc.
+
+#logo {
+	position: relative;
+	top: -10px;
+	text-align: right;
+	padding-right: 0;
+
+	h1 {
+		position: relative;
+		z-index: 11;
+		font-weight: 100;
+		font-size: 50px;
+		line-height: 55px;
+		margin: 0;
+	}
+	.status-bar {
+		position: relative;
+		display: inline-block;
+		height: 0px;
+		width: 90%;
+		background-color: $presetsBG;
+		transition: all 1s ease;
+	}
+	.status-bar.connected {
+		background: linear-gradient(to right, $kmiBlue 0%,#646464 100%);
+		background-size: 300% 300%;
+		height: 2px;
+		animation: connected 5s ease infinite;
+	}
+	.status-bar::before {
+		content: "disconnected";
+		position: absolute;
+		top: -13px;
+		left: 0;
+		width: 100%;
+		text-align: center;
+		font-weight: 100;
+		letter-spacing: 1px;
+	}
+	.status-bar.connected::before {
+		content: "connected";
+		top: -17px;
+	}
+	.status-bar.firmware-update-available::before {
+		content: "new firmware available";
+		color: red;
+		top: -17px;
+	}
+	.status-bar.editor-update-available::before {
+		content: "new editor available";
+		color: red;
+		top: -17px;
+	}
+	.status-bar.firmware-update-available.editor-update-available::before {
+		content: "update editor/firmware";
+		color: red;
+		top: -17px;
+	}
+	.status-bar.firmware {
+		color: green;
+	}
+	.status-bar.firmware::before {
+		content: "updating firmware";
+	}
+	.status-bar.firmware-complete::before {
+		content: "updating complete";
+	}
+	.status-bar.no-webmidi::before {
+		content: "webmidi unsupported";
+	}
+	.status-bar.downloading-update::before {
+		content: "downloading update...";
+		color: red;
+	}
+	.status-bar.loading-preset::before {
+		content: "loading preset...";
+	}
+	.status-bar.bootloader::before {
+		content: "bootloader mode";
+		color: #fed232;
+	}
+}
+.beta #logo h1 {
+	color: #fed232;
+	font-size: 47px;
+}
+#boppad {
+	position: absolute;
+	top: 8px;
+	right: -10px;
+	width: 180px;
+	z-index: 10;
+	cursor: pointer;
+}
+#boppad svg {
+	display: none;
+	position: relative;
+	z-index: 5;
+	width: 90%;
+	top: 71px;
+	right: 9px;
+	pointer-events: all;
+}
+#boppad.connected svg {
+	display: block;
+}
+#boppad svg.active {
+	pointer-events: none;
+}
+#boppad::before {
+	position: absolute;
+	content: " ";
+	width: 160px;
+	height: 160px;
+	border-radius: 160px;
+	background-color: #4f4f4f;
+	z-index: 1;
+	top: 72px;
+	left: 10px;
+	line-height: 150px;
+	text-align: center;
+	box-shadow: 0 0 0px 0px #666;
+	transition: 1s all;
+}
+#boppad.connected::before {
+	animation: pulse 5s infinite alternate ease-out;
+	box-shadow: 0 0 10px 4px #333;
+	content: " ";
+}
+body[data-active='A'] {
+	#bluequad, #active_quadrant path {
+		fill: $kmiBlue;
+	}
+}
+body[data-active='B'] {
+	#bluequad, #active_quadrant path  {
+		fill: $kmiPurple;
+	}
+}
+body[data-active='C'] {
+	#bluequad, #active_quadrant path  {
+		fill: $kmiPink;
+	}
+}
+body[data-active='D'] {
+	 #bluequad, #active_quadrant path  {
+		fill: $kmiOrange;
+	}
+}
+/* unison mode */
+#boppad::after {
+	position: absolute;
+	content: " ";
+	width: 160px;
+	height: 160px;
+	border-radius: 160px;
+	background-color: #00adef;
+	opacity: 0;
+	z-index: 5;
+	top: 72px;
+	left: 10px;
+	line-height: 150px;
+	text-align: center;
+	transition: 1s all ease-in-out;
+	transform: scale(0);
+}
+body[data-unison-quadrant='A'] #boppad::after {
+	background-color: $kmiBlue;
+}
+body[data-unison-quadrant='B'] #boppad::after {
+	background-color: $kmiPurple;
+}
+body[data-unison-quadrant='C'] #boppad::after {
+	background-color: $kmiPink;
+}
+body[data-unison-quadrant='D'] #boppad::after {
+	background-color: $kmiOrange;
+}
+body[data-unison='on'] {
+	#boppad #active_quadrant, #boppad #white_cross {
+		display: none;
+	}
+	#boppad::after {
+		opacity: 0.5;
+		transform: scale(1);
+	}
+}
+/* animations */
+@keyframes connected {
+	0%{background-position:0% 50%}
+	50%{background-position:100% 50%}
+	100%{background-position:0% 50%}
+}
+@keyframes pulse {
+	0% { background-color: #4f4f4f; }
+	50% { background-color: #666; }
+	100% { background-color: #888; }
+}

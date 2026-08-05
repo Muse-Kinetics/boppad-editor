@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2026 KMI Music, Inc.
+
+// Formhack Overrides
+
+// Font
+$fh-font-family: 'Lato', sans-serif;
+$fh-font-size: 10px;
+$fh-line-height: 15px;
+$fh-font-color: rgb(255, 255, 255);
+
+// Borders
+$fh-border-radius: 0px;
+$fh-border-width: 2px;
+$fh-border-color: rgb(255, 255, 255);
+
+// Inputs, Textareas, Select, Option
+$fh-input-height: 27px;
+$fh-input-bg-color: #4a4a4a;
+$fh-focus-bg-color: #666666;
+
+// Buttons & Input Submits
+$fh-button-height: 24px;
+$fh-button-bg-color: $fh-input-bg-color;
+$fh-button-hover-bg-color: #666666;
+
+// Global
+$backgroundColor: #2d2d2d;
+$borderColor: #595959;
+$presetsBG: #646464;
+
+// KMI Colors
+$kmiBlue: #00adef;
+$kmiPurple: #9a6aad;
+$kmiPink: #ec008c;
+$kmiOrange: #f1592a;

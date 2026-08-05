@@ -1,0 +1,187 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) 2026 KMI Music, Inc.
+
+input,
+textarea,
+select,
+option,
+optgroup,
+button,
+legend,
+fieldset {
+	font-size: $fh-font-size;
+	-webkit-app-region: no-drag;
+}
+svg {
+	-webkit-app-region: no-drag;
+}
+select {
+	font-size: 11px;
+	border: none;
+	outline: 2px solid white; outline-offset:-2px;
+	height: 27px;
+	-webkit-app-region: no-drag;
+}
+option {
+  margin: 0;
+  padding: $fh-input-height / 4;
+}
+.btn:not([disabled]):hover, .btn:not([disabled]):focus, .btn:not([disabled]).focus {
+	color: #fff;
+	text-decoration: none;
+}
+.label {
+	font-weight: 100;
+}
+input[disabled] {
+	background-color: #232323;
+	border-color: #666;
+	color: #666;
+}
+input[type="number"] {
+	height: 27px;
+	-moz-appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type=range].slider  {
+	-webkit-appearance: none;
+	background: linear-gradient( to right, #646464, #b2b2b2 100%  );
+	// width: 188px;
+	height:20px;
+	box-shadow: 0 0 0 0 transparent;
+}
+input[type="range"].slider::-webkit-slider-thumb {
+	 -webkit-appearance: none;
+	background-color: #fff;
+	opacity: 0.5;
+	width: 5px;
+	height: 26px;
+}
+input[type="range"].slider::-moz-range-thumb {
+	background-color: #fff;
+	opacity: 0.5;
+	width: 5px;
+	height: 26px;
+	border-radius: 0;
+}
+input[type="range"].slider::-moz-range-track {
+	background-color: transparent;
+}
+.number-input {
+	display: flex;
+	align-items: center;
+	flex-basis: 32%;
+	margin: 0;
+	background-color: #4a4a4a;
+	border: 2px solid #fff;
+	min-width: 1%; // ff fix
+
+	input {
+		flex-grow: 1;
+		width: 60%;
+		height: 24px;
+		padding: 0 0 0 5px;
+		border: 0;
+	}
+	.state {
+		color: #666;
+		font-size: 9px;
+		flex: 1;
+		padding-right: 5px;
+	}
+}
+.number-input:last-child {
+	margin: 0 0 0 10px;
+}
+button.btn, button.btn:focus, button.btn:active, button.btn:visited {
+	color: white;
+	background-color: #4a4a4a;
+	border: 2px solid #fff;
+	border-radius: 0;
+	text-transform: uppercase;
+	font-size: 10px;
+	line-height: 16px;
+	text-align: center;
+	padding: 2px;
+}
+button.nostyle, button.nostyle:hover {
+	background-color: transparent;
+	border: 0;
+	outline: none;
+	border-radius: 0;
+}
+button.btn.savable {
+	background-color: maroon;
+}
+button:not([disabled]) {
+	 &.btn:hover, &[type=button] {
+		color: #fff;
+		background-color: #999;
+		text-shadow: 0 1px 3px black;
+		outline: none;
+	}
+}
+button.btn.active {
+	background-color: #111;
+}
+button.btn.send.active {
+	background-color: steelblue
+}
+[data-quadrant="A"] button.btn.active {
+	background-color: $kmiBlue;
+}
+[data-quadrant="B"] button.btn.active {
+	background-color: $kmiPurple;
+}
+[data-quadrant="C"] button.btn.active {
+	background-color: $kmiPink;
+}
+[data-quadrant="D"] button.btn.active {
+	background-color: $kmiOrange;
+}
+[data-quadrant="A"] {
+	input[type=number], .number-input, button, input.reporter {
+	border-color: $kmiBlue;
+	}
+}
+[data-quadrant="B"] {
+	input[type=number], .number-input, button, input.reporter {
+	border-color: $kmiPurple;
+	}
+}
+[data-quadrant="C"] {
+	input[type=number], .number-input, button, input.reporter {
+		border-color: $kmiPink;
+	}
+}
+[data-quadrant="D"] {
+	input[type=number], .number-input, button, input.reporter {
+		border-color: $kmiOrange;
+	}
+}
+.number-input.error {
+	border-color: maroon !important;
+}
+input.reporter:disabled {
+	text-align: center;
+}
+[data-quadrant="A"] select {
+	outline-color: $kmiBlue;
+}
+[data-quadrant="B"] select {
+	outline-color: $kmiPurple;
+}
+[data-quadrant="C"] select {
+	outline-color: $kmiPink;
+}
+[data-quadrant="D"] select {
+	outline-color: $kmiOrange;
+}
+.lg {
+	max-width: 100%;
+}

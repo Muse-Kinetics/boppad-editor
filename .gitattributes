@@ -1,0 +1,23 @@
+# Normalize line endings. This repo lives in a Dropbox folder synced between a
+# Windows release machine and macOS; without this, cross-platform saves flip
+# every file between CRLF and LF and the whole tree shows as modified.
+# Store all text as LF and check it out as LF on every platform.
+* text=auto eol=lf
+
+# Treat known binary assets as binary: never diff or eol-convert them.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.icns  binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary
+*.syx   binary
+*.dmg   binary
+*.zip   binary
+*.exe   binary
+*.node  binary
+*.pdf   binary

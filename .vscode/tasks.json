@@ -1,0 +1,150 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "BopPad: Install Dependencies",
+      "type": "shell",
+      "command": "npm",
+      "args": ["install"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Build Web",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build:web"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Build Desktop",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build:desktop"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Launch Desktop (Electron)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "start:desktop"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Start Web Dev Server",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "start:web"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Test (boppad-js-api)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["test"],
+      "options": { "cwd": "${workspaceFolder}/packages/boppad-js-api" },
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Make Windows Installer (Signed)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "package-win"],
+      "options": { "cwd": "${workspaceFolder}/apps/desktop" },
+      "detail": "Requires local signtool.exe and the KMI Music, Inc. code-signing cert (see apps/desktop/signWindows.js).",
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Make Windows Installer (Unsigned)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "package-win"],
+      "options": {
+        "cwd": "${workspaceFolder}/apps/desktop",
+        "env": { "KB_SKIP_WINDOWS_SIGN": "1" }
+      },
+      "detail": "Skips code-signing entirely (KB_SKIP_WINDOWS_SIGN=1) — for quick local install/smoke testing.",
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Make macOS Installer (Signed, Skip Notarize)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "package-mac"],
+      "options": { "cwd": "${workspaceFolder}/apps/desktop" },
+      "detail": "Signed universal DMG, notarization skipped — fast local check. There is no fully-unsigned macOS build in this repo; Gatekeeper requires at least signing.",
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Make macOS Installer (Signed + Notarized)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "package-mac-dist"],
+      "options": { "cwd": "${workspaceFolder}/apps/desktop" },
+      "detail": "Full release build: build, sign, package DMG, notarize, staple, regenerate channel metadata. Requires .env with APPLE_KEYCHAIN_PROFILE.",
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Notarize Existing macOS DMG",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "notarize-dmg"],
+      "options": { "cwd": "${workspaceFolder}/apps/desktop" },
+      "detail": "Reuses the already-built app + DMG in release/ and signs/notarizes/staples it. Requires .env with APPLE_KEYCHAIN_PROFILE.",
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Deploy Web to mkMini (Dry Run)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["dotenv", "-e", ".env", "--", "npm", "run", "deploy:web", "--", "--dry-run"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "detail": "Preview only — no upload. Loads BP_WEB_SSH_* from the root .env.",
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Deploy Web to mkMini (LIVE)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["dotenv", "-e", ".env", "--", "npm", "run", "deploy:web"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "detail": "Overwrites the production BopPad web editor. Confirm before running.",
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Build + Deploy Web to mkMini (LIVE)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["dotenv", "-e", ".env", "--", "npm", "run", "build:deploy:web"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "detail": "Builds the web app then overwrites production. Confirm before running.",
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Publish GitHub Release (Windows)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "publish-github-win"],
+      "options": { "cwd": "${workspaceFolder}/apps/desktop" },
+      "detail": "Uploads the already-built, already-tested Windows installer in release/ to the GitHub Release. Requires the gh CLI authenticated with write access.",
+      "problemMatcher": []
+    },
+    {
+      "label": "BopPad: Publish GitHub Release (macOS)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "publish-github-mac"],
+      "options": { "cwd": "${workspaceFolder}/apps/desktop" },
+      "detail": "Uploads the already-built, already-notarized macOS DMG in release/ to the GitHub Release. Requires the gh CLI authenticated with write access.",
+      "problemMatcher": []
+    }
+  ]
+}
