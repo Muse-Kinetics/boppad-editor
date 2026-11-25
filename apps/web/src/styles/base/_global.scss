@@ -16,6 +16,18 @@ body {
 }
 body.electron {
 	padding-top: 44px;
+}
+// Drag only the title-bar strip: since Electron 28 drag regions swallow clicks.
+.titlebar-drag {
+	display: none;
+}
+.electron .titlebar-drag {
+	display: block;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 44px;
 	-webkit-app-region: drag;
 }
 .container {

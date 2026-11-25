@@ -100,6 +100,29 @@ Owner decisions were recorded 2026-08-01 at the start of the migration; see also
 - Rationale: real bug found testing the v1.2.0 deploy — a fresh browser with **no BopPad connected** showed the raw hardcoded HTML placeholder forever, since nothing ever ran to overwrite it. This wasn't a caching issue (confirmed the live `bundle.js` was already correct); it was that the only code path which paints the Preferences-pane version text required a real device round-trip first.
 - Consequence: the Preferences pane and browser tab title are now correct immediately on page load, independent of device connection; a later real device reply still corrects the firmware line if that specific unit is running something other than the bundled version. Both fixes together are defense-in-depth — even if a future release forgets to update the HTML placeholder again, the unconditional JS call will still self-heal it.
 
+## NexusUI's audio clock is stopped at import (2026-11-24)
+
+- Decision: `userCurves.js` calls `Nexus.clock.stop()` and `Nexus.context.close()` right after importing NexusUI.
+- Rationale: NexusUI's constructor starts an AudioContext and a ScriptProcessorNode clock (256-frame buffer, roughly every 6ms) that runs for the life of the page, and that callback segfaults the Chromium renderer (`blink::ScriptProcessorNode::DispatchEvent`) after ordinary clicking. That's the blank-screen bug, on web and desktop. We only use the Multislider and make no sound; the crash was found by symbolizing it against Electron 28.3.3's breakpad symbols.
+- Consequence: no audio graph runs. If we ever use NexusUI's Sequencer or Interval this needs revisiting, and swapping NexusUI for a small multislider of our own would drop the dependency.
+
+## Window drag region is only the 44px title bar strip (2026-11-24)
+
+- Decision: no `-webkit-app-region: drag` on `body.electron` or `.container`. A fixed `.titlebar-drag` element (44px, only under `.electron`) is the drag handle.
+- Rationale: since Electron 28 a drag region on macOS swallows clicks, so anything that isn't a button, input or SVG stopped responding (GitHub #1). Windows gets a framed window where the CSS does nothing, which is probably why Windows testing of 1.2.0 didn't catch it.
+- Consequence: new clickable elements don't need `no-drag`, but you can't drag the window from empty space lower down anymore. The old `no-drag` rules are harmless and left in place.
+
+## release-mac.js writes app-update.yml itself (2026-11-24)
+
+- Decision: after the `--dir` universal build, `release-mac.js` writes `Contents/Resources/app-update.yml` (`build.publish[0]` plus `updaterCacheDirName`) before signing. `--skip-build` fails if the file is missing.
+- Rationale: electron-builder 23 only writes it on mac when the targets include dmg or zip. The `--dir` plus `--prepackaged` flow has neither, so 1.2.0 for Mac shipped without it (GitHub #2).
+- Consequence: Mac updates should work from the next release, though this hasn't been through a full signed build yet. 1.2.0 Mac users have to update by hand once.
+
+## Offline curve library, single curves only (2026-11-24, not implemented)
+
+- Plan: a local library of named 128-point curves you can edit with no BopPad connected. The BopPad's 4 user table slots stay on the device: send a library curve to slot N, or save a slot into the library. Plus JSON export/import (the tables branch of `importLocalStorage` is still a stub) and migration of old `_boppadusertables_User_Table_N` entries, with device actions disabled when nothing's connected.
+- Owner's call: single curves only, no 4-slot sets. Ships in the same pre-release test build as the 1.2.1 fixes.
+
 ## Buddy source of truth
 
 - Decision: `.buddy-project/` is the canonical operational memory. `CLAUDE.md` and `.github/copilot-instructions.md` are adapters only, one per assistant convention.

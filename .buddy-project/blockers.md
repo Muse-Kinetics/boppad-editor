@@ -3,8 +3,9 @@
 
 ## Active Blockers
 
-- **None.** v1.2.0 is fully published and live: Windows installer + web editor + macOS DMG are all on the `v1.2.0` GitHub Release, git history is reconciled to one commit (`e5ab1d6`), and the web editor is deployed to production with the version-display bugs fixed at the root. See current-task.md for the full timeline.
-- The only remaining item is **not a blocker, just deferred work**: the Mac machine should rebuild + republish its DMG against the new canonical `e5ab1d6` history next time it touches this repo (its local `main` is still the superseded `c3216be`) — owner's 2026-08-04 decision to handle that on the Mac machine, not blocking anything else.
+- Nothing is blocking work. Three user-facing 1.2.0 bugs are fixed but not released yet (blank-screen crash, unclickable controls on Mac, Mac Check for Updates); see current-task.md.
+- 1.2.0 Mac installs have no updater config, so those users have to download 1.2.1 by hand. No release we ship can fix that for them.
+- The Mac DMG rebuild against `e5ab1d6` is folded into the 1.2.1 release, and the Mac checkout already tracks `origin/main`.
 
 ## Resolved (2026-08-05) — Dropbox sync gap between Mac and Windows squash commits
 

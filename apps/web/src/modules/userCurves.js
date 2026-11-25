@@ -10,6 +10,10 @@ import { set, boppadPresets } from "./presetHandler";
 import { isConnected, sendSysex } from "./midi";
 import { save, remove } from "./storage";
 
+// NexusUI's audio clock crashes Chromium (ScriptProcessorNode); we don't need audio.
+Nexus.clock.stop();
+Nexus.context.close();
+
 let numberOfSliders = 128,
   allTables = [],
   saveAction = false,

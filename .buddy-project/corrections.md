@@ -18,3 +18,10 @@ Each entry should record:
   if the answer is usually "someone else checked," that is a fact about how this
   project finds its errors.
 - **Consequence:** what it cost, or would have cost.
+
+## 1.2.0 testing missed Mac clicks, the Mac updater, and a renderer crash (caught 2026-11-24)
+
+- **Believed:** 1.2.0 was validated on macOS and Windows.
+- **Actually:** testing covered firmware flashing, builds and signing. On Mac, plain-text controls didn't respond to clicks and Check for Updates failed (no `app-update.yml`). On every platform the renderer could segfault in NexusUI's audio clock, a bug that predates the migration.
+- **How it was caught:** user reports, including GitHub #1 and #2, about 3 months after release. The owner reproduced the crash.
+- **Consequence:** the editor could become unusable, and 1.2.0 Mac users can't auto-update to the fix. Next time, click through every control on each OS and run Check for Updates from the installed app before release.

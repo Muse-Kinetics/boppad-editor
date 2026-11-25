@@ -1,7 +1,23 @@
 <!-- buddy:visibility=public -->
 # Current Task
 
-**v1.2.0 shipped and is live** (2026-08-05/06): hardware-validated chunked firmware update (macOS 2026-08-03, Windows 2026-08-04), signed Windows installer and signed macOS DMG both on the public `v1.2.0` GitHub Release (`Muse-Kinetics/boppad-editor`), and the web editor deployed to production at `files.keithmcmillen.com`. Git history is a single reconciled commit, `e5ab1d6` on `main`, tag `v1.2.0` — see decisions.md for why a second re-squash was needed (the Mac and Windows machines had each independently squashed and pushed unrelated histories). The only work left is macOS rebuilding against this new canonical history on its own machine (owner's standing decision to keep that off this machine) — see "Remaining" at the bottom. Everything below this point is the chronological log of how it got here; read top-down for the story, or jump to "Remaining" for what's actually left.
+## In progress (2026-11-24): v1.2.1 bug fixes + offline curve library
+
+Plan: one pre-release test build with the three fixes below plus the curve library, then release. Owner's call, so 1.2.1 doesn't ship on its own.
+
+**Committed, not released:**
+1. **Blank-screen crash.** Repro (macOS 26.3, desktop or web, no BopPad needed): add a 2nd note in quadrant A, then click a number box in quadrant B. The renderer segfaults in `blink::ScriptProcessorNode::DispatchEvent`, inside the audio clock NexusUI starts on import, so `userCurves.js` now stops the clock and closes its AudioContext. An automated repro crashed every run before the fix and passed 3/3 after.
+2. **Unclickable controls on Mac** (GitHub #1). The whole page was a drag region, and since Electron 28 that swallows clicks (Keyboard (show), quadrant headers, modal close). Dragging is now a fixed 44px `.titlebar-drag` strip; owner click-tested it 2026-11-24.
+3. **Check for Updates on Mac** (GitHub #2). electron-builder 23 only writes `app-update.yml` for dmg/zip targets and `release-mac.js` builds with `--dir`, so 1.2.0 shipped without it. The script now writes it before signing, but it hasn't been through a full signed build yet, and 1.2.0 Mac users will need one manual update.
+
+**Next:**
+- Curve library, single curves only (owner's call): named curves stored locally and editable offline, send one to slot N, save a slot to the library, JSON export/import, migrate old `_boppadusertables_User_Table_N` entries. Design in decisions.md.
+- The user tables window breaks with no BopPad connected (save empties `boppadPresets.usertables`, then `getTable` throws). The library rewrite replaces that code.
+- Then version bump, signed Mac + Windows test builds, release. Electron 28 is EOL, which is worth its own look.
+
+---
+
+**v1.2.0 shipped and is live** (2026-08-05/06): hardware-validated chunked firmware update (macOS 2026-08-03, Windows 2026-08-04), signed Windows installer and signed macOS DMG both on the public `v1.2.0` GitHub Release (`Muse-Kinetics/boppad-editor`), and the web editor deployed to production at `files.keithmcmillen.com`. Git history is a single reconciled commit, `e5ab1d6` on `main`, tag `v1.2.0` — see decisions.md for why a second re-squash was needed (the Mac and Windows machines had each independently squashed and pushed unrelated histories). (As of 2026-11-24 the Mac checkout tracks `origin/main`, and the pending Mac rebuild is folded into the 1.2.1 release above.) Everything below this point is the chronological log of how it got here; read top-down for the story, or jump to "Remaining" for what's actually left.
 
 ## Done (2026-08-04, Windows session)
 
@@ -67,7 +83,7 @@ Fixed two ways: (1) corrected the static placeholder text in `index.html` to `1.
 
 ## Remaining (all owner-approval-gated)
 
-1. **macOS rebuild + release — explicitly deferred to the Mac machine** (2026-08-04 decision). The `BopPad Editor-1.2.0-universal.dmg` on GitHub is still built from before the git-history reconciliation (uploaded 2026-08-03, from the old `c3216be` tree) — not a functional gap (the diffs were packaging/release-tooling and doc files, not shipped-app code), but the Mac machine should adopt the new canonical history (`git fetch && git reset --hard origin/main`, since its local `main` is the now-superseded `c3216be`) and rebuild next time it touches this repo: `npm run package-mac-dist` (or `package-mac` + `notarize-dmg`) → `npm run publish-github-mac`. `.env` needed with `APPLE_KEYCHAIN_PROFILE`.
+1. (2026-11-24: folded into the 1.2.1 release, see the top of this file.) **macOS rebuild + release — explicitly deferred to the Mac machine** (2026-08-04 decision). The `BopPad Editor-1.2.0-universal.dmg` on GitHub is still built from before the git-history reconciliation (uploaded 2026-08-03, from the old `c3216be` tree) — not a functional gap (the diffs were packaging/release-tooling and doc files, not shipped-app code), but the Mac machine should adopt the new canonical history (`git fetch && git reset --hard origin/main`, since its local `main` is the now-superseded `c3216be`) and rebuild next time it touches this repo: `npm run package-mac-dist` (or `package-mac` + `notarize-dmg`) → `npm run publish-github-mac`. `.env` needed with `APPLE_KEYCHAIN_PROFILE`.
 2. Do not push/publish without explicit owner approval.
 
 **Windows + web are both fully done and live**: signed installer + hardware-validated firmware update, published to `v1.2.0` on GitHub, and the web editor deployed to production — all from the same reconciled `e5ab1d6` commit, with the online version-check self-generated by the deploy script and the version-display bug fixed at its root. Only macOS's rebuild (on the Mac machine) remains.

@@ -89,6 +89,22 @@ function buildUniversalApp() {
     run("npm", ["run", "build"]);
     runElectronBuilder(["build", "--mac", "--universal", "--dir", "--publish", "never", "-c.mac.identity=null"]);
     ensureExists(appPath, "Universal mac app");
+    writeAppUpdateConfig();
+}
+
+// electron-builder skips app-update.yml for --dir builds; write it before signing.
+function writeAppUpdateConfig() {
+    const publish = [].concat(packageJson.build?.publish || [])[0];
+    if (!publish) {
+        throw new Error("build.publish is not configured in package.json");
+    }
+    const config = {
+        ...publish,
+        updaterCacheDirName: `${packageJson.name.toLowerCase()}-updater`,
+    };
+    const configPath = path.join(appPath, "Contents", "Resources", "app-update.yml");
+    fs.writeFileSync(configPath, yaml.dump(config));
+    console.log(`>> wrote ${configPath}`);
 }
 
 function signApp() {
@@ -202,6 +218,7 @@ function regenerateChannelMetadata(dmgPath) {
             buildUniversalApp();
         } else {
             ensureExists(appPath, "Universal mac app");
+            ensureExists(path.join(appPath, "Contents", "Resources", "app-update.yml"), "app-update.yml");
         }
 
         signApp();
