@@ -489,7 +489,7 @@
 	<div id="prefs" class="modal-pre-content">
 		<div class="pref versions">
 			<p>versions: <span class="updating-status"></span>
-				<span class="editor-version">editor: <span class="version">1.2.0</span></span>
+				<span class="editor-version">editor: <span class="version">1.3.0</span></span>
 				<span class="firmware-version">firmware: <span class="version">3.0.4</span></span>
 			</p>
 		</div>
@@ -554,14 +554,27 @@
 		<div class="usercurves">
 			<div class="table-buttons"></div>
 			<div id="velocitycurves"></div>
-			<div class="form" data-selectedTable="User Table 1">
-				<select id="curveSelect">
-				</select>
-				<div class="buttons">
-					<button class="btn save-curve" data-action="save-curve">save</button>
-					<button class="btn reset-curve" data-action="reset-curve">reset</button>
-				</div>
+			<div class="form">
+				<select id="curveSelect"></select>
+				<button class="btn" data-action="delete-library">delete</button>
+				<button class="btn" data-action="import-library">import</button>
+				<button class="btn" data-action="export-library">export</button>
+				<input id="curveImport" type="file" accept=".json,application/json" hidden>
 			</div>
+			<div class="form">
+				<input id="curveName" type="text" placeholder="curve name" maxlength="32">
+				<button class="btn" data-action="save-library">save</button>
+				<button class="btn" data-action="reset-curve">reset</button>
+			</div>
+			<div class="form destinations">
+				<div class="send-label">Destination</div>
+				<button class="btn send active" data-slot="1">1</button>
+				<button class="btn send" data-slot="2">2</button>
+				<button class="btn send" data-slot="3">3</button>
+				<button class="btn send" data-slot="4">4</button>
+				<button class="btn send send-curve" data-action="send-curve">send to BopPad</button>
+			</div>
+			<p class="device-hint">Connect a BopPad to load or send its user tables.</p>
 		</div>
 	</div>
 

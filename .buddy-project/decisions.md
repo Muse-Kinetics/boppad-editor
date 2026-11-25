@@ -100,11 +100,17 @@ Owner decisions were recorded 2026-08-01 at the start of the migration; see also
 - Rationale: real bug found testing the v1.2.0 deploy — a fresh browser with **no BopPad connected** showed the raw hardcoded HTML placeholder forever, since nothing ever ran to overwrite it. This wasn't a caching issue (confirmed the live `bundle.js` was already correct); it was that the only code path which paints the Preferences-pane version text required a real device round-trip first.
 - Consequence: the Preferences pane and browser tab title are now correct immediately on page load, independent of device connection; a later real device reply still corrects the firmware line if that specific unit is running something other than the bundled version. Both fixes together are defense-in-depth — even if a future release forgets to update the HTML placeholder again, the unconditional JS call will still self-heal it.
 
-## NexusUI's audio clock is stopped at import (2026-11-24)
+## NexusUI replaced by our own curve slider (2026-11-25)
 
-- Decision: `userCurves.js` calls `Nexus.clock.stop()` and `Nexus.context.close()` right after importing NexusUI.
-- Rationale: NexusUI's constructor starts an AudioContext and a ScriptProcessorNode clock (256-frame buffer, roughly every 6ms) that runs for the life of the page, and that callback segfaults the Chromium renderer (`blink::ScriptProcessorNode::DispatchEvent`) after ordinary clicking. That's the blank-screen bug, on web and desktop. We only use the Multislider and make no sound; the crash was found by symbolizing it against Electron 28.3.3's breakpad symbols.
-- Consequence: no audio graph runs. If we ever use NexusUI's Sequencer or Interval this needs revisiting, and swapping NexusUI for a small multislider of our own would drop the dependency.
+- Decision: drop the `nexusui` dependency. The velocity-curve editor is now `apps/web/src/modules/curveSlider.js`, a canvas multislider (128 bars, drag to draw, gaps between pointer events filled in).
+- Rationale: NexusUI's constructor starts an AudioContext and a ScriptProcessorNode clock at import, before our code runs. That node's callback segfaults the renderer (`blink::ScriptProcessorNode::DispatchEvent`). Stopping the clock and closing the context right after import (the first fix, 2026-11-24) still crashed on a page reload, so the only reliable fix was to never create the node.
+- Consequence: no audio code in the bundle. We only ever used NexusUI's Multislider, so nothing else was lost.
+
+## BopPad output waits for the port to open before sending (2026-11-25)
+
+- Decision: `midi.js` wraps `send()` on the `BopPad` output port. If the port isn't open yet it calls `open()` and sends once that resolves; when it's already open, sends pass straight through.
+- Rationale: sending to an output that's still opening makes Chromium queue the bytes and flush them in `MIDIOutput::DidOpen`, which segfaulted in the same `AccumulateArrayBuffersForAllWorlds` / `DOMArrayBuffer::IsDetached` frames as the audio crash. This happens on connect and at startup ("request device presets"), and it's the likely cause of the blank screen when a BopPad is plugged in. With the wrapper, 8 reloads with a BopPad attached ran clean; before it, the editor crashed within 5.
+- Consequence: the underlying Chromium bug is still in Electron 28, so other triggers may exist; upgrading Electron is the real fix. The firmware chunk transfer uses the separate `BopPad Bootloader` port and isn't wrapped, but the enter-bootloader command goes to `BopPad`, so a firmware update should be re-run on hardware before release.
 
 ## Window drag region is only the 44px title bar strip (2026-11-24)
 
@@ -118,10 +124,16 @@ Owner decisions were recorded 2026-08-01 at the start of the migration; see also
 - Rationale: electron-builder 23 only writes it on mac when the targets include dmg or zip. The `--dir` plus `--prepackaged` flow has neither, so 1.2.0 for Mac shipped without it (GitHub #2).
 - Consequence: Mac updates should work from the next release, though this hasn't been through a full signed build yet. 1.2.0 Mac users have to update by hand once.
 
-## Offline curve library, single curves only (2026-11-24, not implemented)
+## Curve library: local saved curves plus the device's four slots in one menu (2026-11-25)
 
-- Plan: a local library of named 128-point curves you can edit with no BopPad connected. The BopPad's 4 user table slots stay on the device: send a library curve to slot N, or save a slot into the library. Plus JSON export/import (the tables branch of `importLocalStorage` is still a stub) and migration of old `_boppadusertables_User_Table_N` entries, with device actions disabled when nothing's connected.
-- Owner's call: single curves only, no 4-slot sets. Ships in the same pre-release test build as the 1.2.1 fixes.
+- Decision: saved curves live in localStorage (`_boppadcurve_<name>`, `curveLibrary.js`) and work offline. The User Tables window has one curve menu: a User group with saved curves and a Device group with the BopPad's User Table 1 to 4, matching how the main preset menu groups presets. Sending uses destination buttons 1 to 4, like preset destinations. Import/export is a `boppad_curves.json` file; exact duplicates are skipped and name clashes get a suffix. Old `_boppadusertables_User_Table_N` entries are migrated once as "User Table N (saved)".
+- Rationale: owner wants to build curves offline and apply them to several BopPads. Single curves only, no 4-slot sets (owner's call). The web and desktop editors have separate localStorage, so the file is how curves move between them.
+- Consequence: sending updates the in-memory slot directly instead of clearing and re-requesting the device's tables, which is what used to break the window with no device connected. The old slot dropdown never worked at all: its handler was bound to `.modal.usertables` before that class existed.
+
+## Version 1.3.0 for the test build and the release (2026-11-25)
+
+- Decision: the customer test DMG is 1.3.0 (owner's call), not a beta number.
+- Consequence: if anything changes after testers get it, the public release needs a new number (1.3.1), because their updater won't offer a second 1.3.0.
 
 ## Buddy source of truth
 

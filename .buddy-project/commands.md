@@ -37,7 +37,7 @@ menu, prefixed `BopPad:` so they're findable in a larger multi-root workspace.
   - put it on PATH directly: `export PATH="$HOME/.nvm/versions/node/v24.15.0/bin:$PATH"`
 - **Pause Dropbox before installing/building** if `node_modules` looks dehydrated (missing-module / missing-`7za` errors). Then `rm -rf node_modules && npm install` while paused. See blockers.md.
 - **`electron-builder` must stay `^23.0.3`** (24.x breaks the mac build). See decisions.md.
-- Repository: `git@github.com:Muse-Kinetics/boppad-editor.git` — **live**, single squashed commit `e5ab1d6` on `main`, tagged `v1.2.0`, public GitHub Release with mac + Windows assets. Every future commit/push/force-push/tag move still needs the owner's explicit approval (see guidelines.md) — **and in this environment, Claude Code's auto-mode classifier blocks those git operations outright even with approval already given**, so hand the exact command to the owner to run via `!<command>` rather than expecting to run it directly.
+- Repository: `git@github.com:Muse-Kinetics/boppad-editor.git` — **live**, `main` tagged `v1.2.0` at `e5ab1d6` with a public GitHub Release (mac + Windows assets); 1.3.0 work sits on top of it. Every future commit/push/force-push/tag move still needs the owner's explicit approval (see guidelines.md) — **and in this environment, Claude Code's auto-mode classifier blocks those git operations outright even with approval already given**, so hand the exact command to the owner to run via `!<command>` rather than expecting to run it directly.
 
 ## Root Build / Run (npm workspaces)
 
@@ -77,7 +77,7 @@ menu, prefixed `BopPad:` so they're findable in a larger multi-root workspace.
 ## Required Environment Variables
 
 - `BP_WEB_SSH_SERVER` / `BP_WEB_SSH_LOCATION` — web deploy target (`user@host`, and the absolute path to the directory the site serves). Set both in the local `.env`; the live values are not recorded in this repository. Optional `BP_WEB_<TARGET>_SSH_*` (e.g. `DEV`) and `BP_WEB_REMOTE_GROUP` (default `www-data`). The shared `KB_WEB_*` / `KB_*` vars are honored as fallbacks. See `.env.example`. Source before deploying: `set -a; source .env; set +a`.
-- `APPLE_KEYCHAIN_PROFILE` — stored `xcrun notarytool` keychain profile for notarization (see `apps/desktop/.env.example`).
+- `APPLE_KEYCHAIN_PROFILE` — stored `xcrun notarytool` keychain profile for notarization (see `apps/desktop/.env.example`). If there's no `.env` on the machine, pass it inline: `APPLE_KEYCHAIN_PROFILE=<profile> npm run package-mac-dist`. Check the profile and Apple account first with `xcrun notarytool history --keychain-profile <profile>`; a 403 means the developer agreement needs accepting.
 - GitHub token for `publish-github.js` (e.g. `GH_TOKEN` / `GITHUB_TOKEN`) — for GitHub Releases publishing.
 - Apple notarization credentials live in the gitignored `.env`. Keep them local; never commit `.env`.
 - The deploy needs key-based SSH to the target host, working non-interactively from the deploying machine.
@@ -96,5 +96,5 @@ menu, prefixed `BopPad:` so they're findable in a larger multi-root workspace.
 
 ## Not Yet Wired / Unverified
 
-- **macOS rebuild against the new canonical git history (`e5ab1d6`)** — the Mac machine's local `main` is still the superseded `c3216be`; needs `git fetch && git reset --hard origin/main` before its next build/release pass. See current-task.md.
+- **`release-mac.js` writing `app-update.yml`** (2026-11-24) hasn't been through a full signed build yet; check `Contents/Resources/app-update.yml` in the built app and run Check for Updates from it.
 - **Cloudflare cache purging is manual** — no Cloudflare API token exists in `.env`/`.env.example`, so a stale `bundle.js` (7-day `max-age`) after a deploy needs CDN dashboard access to purge immediately; otherwise it self-resolves within 7 days. `index.html` itself is never cached (`cf-cache-status: DYNAMIC`), so this only affects `bundle.js`/`style.css`/etc., not the page shell.

@@ -3,9 +3,9 @@
 
 ## Active Blockers
 
-- Nothing is blocking work. Three user-facing 1.2.0 bugs are fixed but not released yet (blank-screen crash, unclickable controls on Mac, Mac Check for Updates); see current-task.md.
-- 1.2.0 Mac installs have no updater config, so those users have to download 1.2.1 by hand. No release we ship can fix that for them.
-- The Mac DMG rebuild against `e5ab1d6` is folded into the 1.2.1 release, and the Mac checkout already tracks `origin/main`.
+- **Mac notarization (2026-11-25).** Apple returns HTTP 403, "A required agreement is missing or has expired." The team account holder has to accept the updated agreement at developer.apple.com before `package-mac-dist` or `notarize-dmg` can finish. Signing works; only notarization is blocked.
+- **Firmware update hardware re-test before releasing 1.3.0.** The enter-bootloader command now goes through the send-when-open `BopPad` output (see decisions.md). Not a code blocker, a validation gate.
+- 1.2.0 Mac installs have no updater config, so those users have to download 1.3.0 by hand. No release we ship can fix that for them.
 
 ## Resolved (2026-08-05) — Dropbox sync gap between Mac and Windows squash commits
 

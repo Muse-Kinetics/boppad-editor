@@ -1,174 +1,190 @@
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 KMI Music, Inc.
 
-import Nexus from "nexusui";
+import CurveSlider from "./curveSlider";
 
 import curveTables from "./curveTables.json";
 import { userTable } from "./jsonSysex";
 import { decodeTable } from "./presetFromSysex";
 import { set, boppadPresets } from "./presetHandler";
 import { isConnected, sendSysex } from "./midi";
-import { save, remove } from "./storage";
-
-// NexusUI's audio clock crashes Chromium (ScriptProcessorNode); we don't need audio.
-Nexus.clock.stop();
-Nexus.context.close();
+import * as library from "./curveLibrary";
 
 let numberOfSliders = 128,
-  allTables = [],
-  saveAction = false,
   curveSelect = document.querySelector("#curveSelect"),
-  selectedCurveIndex = 0,
-  tableName = "User Table 1";
+  curveName = document.querySelector("#curveName"),
+  importInput = document.querySelector("#curveImport");
 
-// TODO: allow default tables to load without boppad connected
-const velocitycurves = new Nexus.Multislider("#velocitycurves", {
-  size: [500, 200],
-  numberOfSliders: numberOfSliders,
-  min: 0,
-  max: 127,
-  step: 1,
-  candycane: 1,
-  smoothing: 1,
-  mode: "bar",
-  values: [...curveTables[Object.keys(curveTables)[0]]], // set default curve
+const velocitycurves = new CurveSlider(document.querySelector("#velocitycurves"), {
+  count: numberOfSliders,
 });
+velocitycurves.setAllSliders(curveTables.linear);
 
-// set multislider styles
-Nexus.colors.accent = "#04aef0";
-velocitycurves.colorize("fill", "#333");
-velocitycurves.colorize("accent", "#00adef");
-
-velocitycurves.element.style.opacity = 1;
-
-velocitycurves.on("change", (e) => {
-  if (velocitycurves.hasMoved) {
-    // TODO: highlight save /revert buttons
-    console.log("velocitycurves", velocitycurves.values);
-  }
-});
-
-// request
 $(document).on("modalcurvetableopen", () => {
-  let tableNames = Object.keys(curveTables);
-
-  saveAction = false;
-  // reset user tables
+  library.migrateLegacy();
+  buildButtons(Object.keys(curveTables));
   boppadPresets.usertables = [];
-
-  // add buttons to modal. this doesn't need to happen everytime
-  buildButtons(tableNames);
+  buildMenu();
+  setDeviceControls(isConnected());
 
   if (isConnected()) {
-    // request user tables
     $(document).trigger("requestusertables");
   } else {
-    $(document).trigger("usertablesready");
-    setTable(getTable("linear"), velocitycurves);
+    setTable(curveTables.linear);
   }
 });
 
-// build
+// fired by presetHandler once all four user tables have arrived from the device
 $(document).on("usertablesready", () => {
-  console.log(">> user tables ready, building menu");
+  if (!isConnected()) return;
+  buildMenu("device:1");
+  loadSelected();
+});
 
-  let tableNames = Object.keys(curveTables);
-  addDefaultTables(tableNames);
-  buildMenu(boppadPresets.usertables);
+$(curveSelect).on("change", loadSelected);
 
+$(importInput).on("change", () => {
+  const file = importInput.files[0];
+  if (!file) return;
+
+  file.text().then((text) => {
+    let count = 0;
+    try {
+      count = library.importData(JSON.parse(text));
+    } catch (e) {
+      console.warn("curve import: not a valid JSON file", e);
+    }
+    console.log(">> imported", count, "curves");
+    buildMenu(curveSelect.value);
+    importInput.value = "";
+  });
+});
+
+$(".usercurves").on("click", "button", function (e) {
+  const action = e.target.dataset.action,
+    factoryTable = e.target.dataset.table;
+
+  if (factoryTable) {
+    setTable(curveTables[factoryTable]);
+    curveSelect.selectedIndex = -1;
+    $(".usercurves [data-action=delete-library]").prop("disabled", true);
+    return;
+  }
+  if (e.target.dataset.slot) {
+    setDestination(e.target.dataset.slot);
+    return;
+  }
+
+  switch (action) {
+    case "send-curve":
+      sendCurrentToSlot();
+      break;
+    case "reset-curve":
+      setTable(curveTables.linear);
+      curveSelect.selectedIndex = -1;
+      $(".usercurves [data-action=delete-library]").prop("disabled", true);
+      break;
+    case "save-library":
+      saveToLibrary();
+      break;
+    case "delete-library":
+      if (curveSelect.value.startsWith("user:")) library.remove(curveSelect.value.slice(5));
+      buildMenu();
+      break;
+    case "import-library":
+      importInput.click();
+      break;
+    case "export-library":
+      library.exportFile();
+      break;
+  }
+});
+
+function getCurrentTable() {
+  return velocitycurves.values.slice();
+}
+
+function setTable(array) {
+  velocitycurves.setAllSliders([...array]);
+}
+
+function slotName(slot) {
+  return "User Table " + slot;
+}
+
+function getSlot(slot) {
+  return boppadPresets.usertables.find((table) => table.name === slotName(slot));
+}
+
+function getDestination() {
+  return $(".usercurves [data-slot].active").data("slot");
+}
+
+function setDestination(slot) {
+  $(".usercurves [data-slot]").removeClass("active").filter(`[data-slot=${slot}]`).addClass("active");
+}
+
+// option values are "user:<name>" for saved curves and "device:<slot>" for the BopPad's tables
+function loadSelected() {
+  const [type, key] = curveSelect.value.split(/:(.*)/);
+
+  if (type === "user") {
+    const curve = library.get(key);
+    if (curve) {
+      setTable(curve.table);
+      curveName.value = curve.name;
+    }
+  } else if (type === "device") {
+    const slot = getSlot(key);
+    if (slot) setTable(slot.table);
+    setDestination(key);
+  }
+  $(".usercurves [data-action=delete-library]").prop("disabled", type !== "user");
+}
+
+function sendCurrentToSlot() {
   if (!isConnected()) return;
 
-  if (!saveAction) {
-    // load user table 1 on open
-    setTable(getTable("User Table 1"), velocitycurves);
-  } else {
-    // select current user table on rebuild
-    $("#curveSelect").val("User Table " + (selectedCurveIndex + 1));
+  const slot = getDestination(),
+    table = getCurrentTable(),
+    existing = getSlot(slot);
+
+  sendSysex({ type: "table", item: userTable(slot, table) });
+
+  if (existing) existing.table = table;
+  else boppadPresets.usertables.push({ name: slotName(slot), table });
+}
+
+function saveToLibrary() {
+  const name = curveName.value.trim();
+  if (!name) {
+    curveName.focus();
+    return;
   }
-});
 
-$(".modal.usertables").on("change", "select", function (e) {
-  let table = e.target.selectedOptions[0].value;
-
-  selectedCurveIndex = curveSelect.selectedIndex;
-
-  tableName = "User Table " + (selectedCurveIndex + 1);
-
-  setTable(getTable(table), velocitycurves);
-});
-
-function getCurrentTable(el) {
-  return el.values.map((item) => Math.round(item));
+  library.save(name, getCurrentTable());
+  buildMenu("user:" + name);
 }
 
-function getTable(name) {
-  console.log("gettable", name, boppadPresets.usertables);
-  let tableObject = boppadPresets.usertables.find(
-    (object) => object.name == name
-  );
-  return tableObject.table;
+function buildMenu(selected = "") {
+  const curves = library.list(),
+    slots = [1, 2, 3, 4].filter((slot) => getSlot(slot)),
+    option = (text, value) => '<option value="' + value + '">' + text + "</option>";
+
+  let html = "";
+  if (curves.length) html += '<optgroup label="User">' + curves.map(({ name }) => option(name, "user:" + name)).join("") + "</optgroup>";
+  if (slots.length) html += '<optgroup label="Device">' + slots.map((slot) => option(slotName(slot), "device:" + slot)).join("") + "</optgroup>";
+
+  curveSelect.innerHTML = html;
+  curveSelect.value = selected;
+  curveSelect.disabled = !html;
+
+  $(".usercurves [data-action=delete-library]").prop("disabled", !selected.startsWith("user:"));
+  $(".usercurves [data-action=export-library]").prop("disabled", !curves.length);
 }
 
-function setTable(array, ui) {
-  ui.setAllSliders([...array]);
-}
-
-$(".modal").on("click", "button", function (e) {
-  let action = e.target.dataset.action,
-    tableAction = e.target.dataset.table,
-    currentTable = getCurrentTable(velocitycurves),
-    table = [];
-
-  if (tableAction) {
-    setTable(getTable(tableAction), velocitycurves);
-  } else {
-    switch (action) {
-      case "save-curve":
-        table = userTable(selectedCurveIndex + 1, currentTable);
-        // send table
-        sendSysex({ type: "table", item: table });
-        // reset user tables
-        boppadPresets.usertables = [];
-        // save action
-        saveAction = true;
-        // rebuildTables
-        $(document).trigger("requestusertables");
-        // save to storage
-        save(currentTable, false, "_boppadusertables_", tableName);
-        break;
-      case "reset-curve":
-        setTable(getTable("linear"), velocitycurves);
-        break;
-    }
-  }
-});
-
-function buildMenu(tables) {
-  let tableMenu = $("#curveSelect"),
-    tableOptions = Object.keys(tables)
-      .filter((index) => tables[index].name.toLowerCase().includes("user"))
-      .map(
-        (index) =>
-          '<option value="' +
-          tables[index].name +
-          '">' +
-          tables[index].name +
-          "</option>"
-      );
-
-  tableMenu.empty().append(tableOptions.join(""));
-}
-
-function addDefaultTables(tableNames) {
-  // add factory curve tables
-  tableNames.forEach((tableName) => {
-    let tableObject = {
-      name: tableName,
-      table: curveTables[tableName],
-    };
-
-    boppadPresets.usertables.push(tableObject);
-  });
+function setDeviceControls(connected) {
+  $(".usercurves .destinations button").prop("disabled", !connected);
 }
 
 function buildButtons(names) {

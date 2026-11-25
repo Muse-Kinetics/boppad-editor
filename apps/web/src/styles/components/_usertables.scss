@@ -10,7 +10,6 @@ svg:not(#svg_boppad) {
 
   .modal-inner {
     width: 500px;
-    height: 290px;
     padding: 0;
     font-weight: 100;
 
@@ -20,26 +19,52 @@ svg:not(#svg_boppad) {
 
     .form {
       display: flex;
-      padding: 10px;
+      gap: 5px;
+      padding: 0 10px 10px;
 
-      select {
-        flex: 0 50%;
-      }
-      select.unsaved {
-        font-style: italic;
-      }
-      .buttons {
-        display: flex;
-        flex: 0 50%;
-        margin-left: 5px;
-      }
-      button {
-        flex: 0 50%;
+      select, input[type=text] {
+        flex: 1;
+        min-width: 0;
         height: 27px;
       }
-      button:nth-child(2) {
-        margin: 0 5px;
+      input[type=text] {
+        padding: 0 5px;
+        border: none;
+        outline: 2px solid white;
+        outline-offset: -2px;
+        background-color: #4a4a4a;
+        color: white;
+        -webkit-app-region: no-drag;
       }
+      button {
+        flex: 0 0 75px;
+        height: 27px;
+      }
+      &.destinations {
+        align-items: center;
+
+        .send-label {
+          margin-right: 5px;
+        }
+        [data-slot] {
+          flex-basis: 40px;
+        }
+        .send-curve {
+          flex: 1;
+        }
+      }
+      input[type=file] {
+        display: none;
+      }
+    }
+    #velocitycurves + .form {
+      padding-top: 10px;
+    }
+    .device-hint {
+      margin: 0;
+      padding-bottom: 10px;
+      font-size: 11px;
+      color: #999;
     }
   }
 }
@@ -69,4 +94,8 @@ svg:not(#svg_boppad) {
       }
     }
   }
+}
+
+body[data-connected="true"] .device-hint {
+  display: none;
 }

@@ -51,6 +51,11 @@ function success(midiAccess){
 
 	// setup web midi
 	MIDI = webmidi(midi, globalThis.BOPPAD_BETA)
+	const getOutput = MIDI.getOutput
+	MIDI.getOutput = (device, report) => {
+		const port = getOutput(device, report)
+		return device === deviceName ? sendWhenOpen(port) : port
+	}
 	window.midi = midi
 	// setup statechange handler
 	midi.addEventListener('statechange', deviceSetup)
@@ -96,6 +101,18 @@ function success(midiAccess){
 	// setup listeners for MIDI and device events
 	console.log('>> setup listeners')
 	setupListeners()
+}
+
+// Electron 28's Chromium can segfault flushing sends queued on a still-opening output (MIDIOutput::DidOpen).
+function sendWhenOpen(port){
+	if(!port || port.sendWhenOpen) return port
+	const send = port.send.bind(port)
+	port.send = (data, timestamp) => {
+		if(port.connection === 'open') return send(data, timestamp)
+		port.open().then(() => send(data))
+	}
+	port.sendWhenOpen = true
+	return port
 }
 
 function deviceSetup(e){

@@ -37,7 +37,7 @@ import convert from "./modules/convertStoredPresets"
 import { updateVersionDisplay } from "./modules/firmwareUpdater"
 import activateQuadrant from './modules/activateQuadrant'
 
-globalThis.BOPPAD_EDITOR_VERSION = '1.2.0'
+globalThis.BOPPAD_EDITOR_VERSION = '1.3.0'
 globalThis.BOPPAD_FIRMWARE_VERSION = '3.0.4'
 globalThis.BOPPAD_BETA = false
 
