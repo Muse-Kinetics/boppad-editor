@@ -41,6 +41,14 @@ globalThis.BOPPAD_EDITOR_VERSION = '1.2.0'
 globalThis.BOPPAD_FIRMWARE_VERSION = '3.0.4'
 globalThis.BOPPAD_BETA = false
 
+// index.html hardcodes placeholder version text (editor 1.1.1, firmware
+// 0.0.0) that otherwise only gets overwritten once a device is connected and
+// replies (see checkFirmware.js/firmwareeditorchecked). Paint the real
+// build-time defaults immediately so a fresh page load is never wrong before
+// any device shows up; a later real device reply still corrects the
+// firmware line to what that specific unit actually reports.
+updateVersionDisplay()
+
 let boppadSVG = $('#boppad'),
 		keyboardSVG = $('#keyboard'),
 		sendPresetSysexBtn = document.querySelector('#sendpreset'),

@@ -1,0 +1,17 @@
+name: BopPad Editor Monorepo
+description: Monorepo for the BopPad web editor (jQuery), Electron desktop editor, and the shared headless BopPad MIDI/SysEx + chunked-firmware package.
+repository: git@github.com:Muse-Kinetics/boppad-editor.git
+status: active
+phase: post-release-maintenance
+owner: Eric Bateman
+responsible_buddy: Mac
+visibility: public
+created: "2026-08-01"
+last_updated: "2026-11-24T15:48:21-08:00"
+tags:
+    - electron
+    - jquery
+    - webmidi
+    - firmware
+    - monorepo
+    - migration

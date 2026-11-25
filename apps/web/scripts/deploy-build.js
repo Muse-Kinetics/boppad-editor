@@ -25,10 +25,13 @@
 //
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
 const buildDir = path.resolve(__dirname, '..', 'build');
+const webPackageRoot = path.resolve(__dirname, '..');
+const repoRoot = path.resolve(webPackageRoot, '..', '..');
 const remoteGroup =
   process.env.BP_WEB_REMOTE_GROUP
   || process.env.KB_WEB_REMOTE_GROUP
@@ -183,6 +186,37 @@ function syncRemoteGroupAndPermissions(sshServer, remotePath) {
   }
 }
 
+// checkFirmware.js's online "is a newer version published" check fetches a
+// SEPARATE file, products/boppad/firmware/currentVersion.json — a sibling of
+// the editor/ directory this script deploys, not the editor's own *bundled*
+// firmware/currentVersion.json (which is a different schema, used by the
+// local-first firmware updater). It used to be hand-maintained and silently
+// drifted (still read editor 1.1.1 / firmware 3.0.3 after the 1.2.0/3.0.4
+// release). Generate it from the same sources of truth as the rest of the
+// release so it can't drift like that again.
+function buildVersionCheckManifest() {
+  const editorVersion = require(path.join(webPackageRoot, 'package.json')).version;
+  const firmwareManifestPath = path.join(repoRoot, 'firmware', 'currentVersion.json');
+  const firmwareVersion = JSON.parse(fs.readFileSync(firmwareManifestPath, 'utf8')).firmware.version;
+
+  return { editor: { version: editorVersion }, firmware: { version: firmwareVersion } };
+}
+
+function uploadVersionCheckManifest(sshServer, normalizedLocation) {
+  const remoteFirmwareDir = `${path.dirname(normalizedLocation)}/firmware`;
+  const manifest = buildVersionCheckManifest();
+  const tmpFile = path.join(os.tmpdir(), `boppad-currentVersion-${process.pid}.json`);
+
+  fs.writeFileSync(tmpFile, `${JSON.stringify(manifest, null, 2)}\n`);
+  try {
+    runSsh(sshServer, `mkdir -p ${quoteForShell(remoteFirmwareDir)}`);
+    scpUploadFile(sshServer, path.dirname(tmpFile), path.basename(tmpFile), remoteFirmwareDir);
+    runSsh(sshServer, `mv ${quoteForShell(`${remoteFirmwareDir}/${path.basename(tmpFile)}`)} ${quoteForShell(`${remoteFirmwareDir}/currentVersion.json`)}`);
+  } finally {
+    fs.unlinkSync(tmpFile);
+  }
+}
+
 const { unrecognizedArgs, target, dryRun } = parseArgs(process.argv.slice(2));
 
 if (unrecognizedArgs.length > 0) {
@@ -208,7 +242,6 @@ const destination = `${sshServer}:${normalizedLocation}/`;
 
 // A CHANGELOG at the web package root (if present) is uploaded alongside the
 // build so the served copy stays current; harmlessly skipped when absent.
-const webPackageRoot = path.resolve(__dirname, '..');
 const changelogName = 'CHANGELOG.md';
 const hasChangelog = fs.existsSync(path.join(webPackageRoot, changelogName));
 
@@ -221,6 +254,8 @@ if (dryRun) {
   if (hasChangelog) {
     console.log(`[dry run] would also upload ${changelogName} from ${webPackageRoot}`);
   }
+  const previewManifest = buildVersionCheckManifest();
+  console.log(`[dry run] would write ${path.dirname(normalizedLocation)}/firmware/currentVersion.json: editor ${previewManifest.editor.version}, firmware ${previewManifest.firmware.version}`);
   console.log(`[dry run] would then best-effort chgrp ${remoteGroup} + normalize perms under ${normalizedLocation}`);
   process.exit(0);
 }
@@ -233,7 +268,12 @@ if (hasChangelog) {
   scpUploadFile(sshServer, webPackageRoot, changelogName, normalizedLocation);
 }
 
-console.log(`Syncing remote group ${remoteGroup} under ${normalizedLocation}`);
+const remoteFirmwareDir = `${path.dirname(normalizedLocation)}/firmware`;
+console.log(`Writing ${remoteFirmwareDir}/currentVersion.json (online version-check manifest)`);
+uploadVersionCheckManifest(sshServer, normalizedLocation);
+
+console.log(`Syncing remote group ${remoteGroup} under ${normalizedLocation} and ${remoteFirmwareDir}`);
 syncRemoteGroupAndPermissions(sshServer, normalizedLocation);
+syncRemoteGroupAndPermissions(sshServer, remoteFirmwareDir);
 
 process.exit(0);

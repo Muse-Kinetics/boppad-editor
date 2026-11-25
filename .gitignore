@@ -15,5 +15,5 @@ renderer/
 .DS_Store
 *.log
 
-# Internal working files (kept local, not for the public repo)
-.buddy-project/
+# Buddy project state is tracked. Machine-local and internal-marked files are
+# excluded by .buddy-project/.gitignore.

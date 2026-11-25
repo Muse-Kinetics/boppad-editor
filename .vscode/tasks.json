@@ -102,7 +102,7 @@
       "problemMatcher": []
     },
     {
-      "label": "BopPad: Deploy Web to mkMini (Dry Run)",
+      "label": "BopPad: Deploy Web (Dry Run)",
       "type": "shell",
       "command": "npx",
       "args": ["dotenv", "-e", ".env", "--", "npm", "run", "deploy:web", "--", "--dry-run"],
@@ -111,7 +111,7 @@
       "problemMatcher": []
     },
     {
-      "label": "BopPad: Deploy Web to mkMini (LIVE)",
+      "label": "BopPad: Deploy Web (LIVE)",
       "type": "shell",
       "command": "npx",
       "args": ["dotenv", "-e", ".env", "--", "npm", "run", "deploy:web"],
@@ -120,7 +120,7 @@
       "problemMatcher": []
     },
     {
-      "label": "BopPad: Build + Deploy Web to mkMini (LIVE)",
+      "label": "BopPad: Build + Deploy Web (LIVE)",
       "type": "shell",
       "command": "npx",
       "args": ["dotenv", "-e", ".env", "--", "npm", "run", "build:deploy:web"],
